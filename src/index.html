@@ -409,36 +409,36 @@
       </button>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-blue-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Total Players</div>
-          <div class="text-2xl sm:text-3xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-5 sm:mb-6">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-blue-500/50 transition-colors duration-200" x-cloak>
+          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Total Players</div>
+          <div class="text-xl sm:text-2xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
         </div>
-        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-cyan-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Per Page</div>
-          <div class="text-2xl sm:text-3xl font-bold text-cyan-400" x-text="pageSize"></div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-cyan-500/50 transition-colors duration-200" x-cloak>
+          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Per Page</div>
+          <div class="text-xl sm:text-2xl font-bold text-cyan-400" x-text="pageSize"></div>
         </div>
-        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-emerald-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Current Page</div>
-          <div class="text-2xl sm:text-3xl font-bold text-emerald-400" x-text="currentPage"></div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-emerald-500/50 transition-colors duration-200" x-cloak>
+          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Current Page</div>
+          <div class="text-xl sm:text-2xl font-bold text-emerald-400" x-text="currentPage"></div>
         </div>
-        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-indigo-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Total Pages</div>
-          <div class="text-2xl sm:text-3xl font-bold text-indigo-400" x-text="totalPages"></div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-indigo-500/50 transition-colors duration-200" x-cloak>
+          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Total Pages</div>
+          <div class="text-xl sm:text-2xl font-bold text-indigo-400" x-text="totalPages"></div>
         </div>
       </div>
 
       <!-- Card View (Mobile-First) -->
-      <div x-show="viewMode === 'card'" class="space-y-4 mb-8 view-transition">
+      <div x-show="viewMode === 'card'" class="space-y-3 mb-8 view-transition">
         <template x-for="(row, idx) in data" :key="row.id">
-          <div class="player-card bg-gradient-to-br from-slate-800 to-slate-800/90 border border-slate-700 rounded-xl p-5 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10">
+          <div class="player-card bg-gradient-to-br from-slate-800 to-slate-800/90 border border-slate-700 rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10">
             <!-- Player Header -->
-            <div class="flex items-start justify-between mb-4 pb-4 border-b border-slate-700">
+            <div class="flex items-start justify-between mb-3 pb-3 border-b border-slate-700">
               <div class="flex-1 min-w-0">
-                <h3 class="text-xl font-bold text-blue-300 mb-1 truncate" x-text="row.web_name"></h3>
-                <div class="flex items-center gap-3 text-sm">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300 font-medium" x-text="row.team"></span>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
+                <h3 class="text-lg font-bold text-blue-300 mb-1 truncate" x-text="row.web_name"></h3>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-medium text-xs" x-text="row.team"></span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full font-medium text-xs"
                     :class="{
                       'bg-purple-900/30 text-purple-400': row.element_type === 'GKP',
                       'bg-blue-900/30 text-blue-400': row.element_type === 'DEF',
@@ -449,51 +449,51 @@
                 </div>
               </div>
               <!-- Main Score -->
-              <div class="text-right ml-3">
-                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Score</div>
-                <div class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent" x-text="formatScore(row.consistency_score, row)"></div>
+              <div class="text-right ml-2">
+                <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Score</div>
+                <div class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent" x-text="formatScore(row.consistency_score, row)"></div>
               </div>
             </div>
 
             <!-- Key Metrics Grid -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="grid grid-cols-2 gap-2 mb-3">
               <!-- Avg Points -->
-              <div class="bg-slate-700/30 rounded-lg p-3">
-                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Avg Points</div>
-                <div class="text-2xl font-bold text-emerald-400" x-text="row.points_avg || '0'"></div>
+              <div class="bg-slate-700/30 rounded-lg p-2.5">
+                <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Avg Points</div>
+                <div class="text-xl font-bold text-emerald-400" x-text="row.points_avg || '0'"></div>
               </div>
               <!-- Return Rate -->
-              <div class="bg-slate-700/30 rounded-lg p-3">
-                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Return Rate</div>
-                <div class="text-2xl font-bold text-cyan-400" x-text="row.return_rate_smooth || '0'"></div>
+              <div class="bg-slate-700/30 rounded-lg p-2.5">
+                <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Return Rate</div>
+                <div class="text-xl font-bold text-cyan-400" x-text="row.return_rate_smooth || '0'"></div>
               </div>
               <!-- 5+ Returns -->
-              <div class="bg-slate-700/30 rounded-lg p-3">
-                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">5+ Returns</div>
-                <div class="text-2xl font-bold text-green-400" x-text="row.returns_5plus_count || '0'"></div>
+              <div class="bg-slate-700/30 rounded-lg p-2.5">
+                <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">5+ Returns</div>
+                <div class="text-xl font-bold text-green-400" x-text="row.returns_5plus_count || '0'"></div>
               </div>
               <!-- Hauls -->
-              <div class="bg-slate-700/30 rounded-lg p-3">
-                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Hauls (10+)</div>
-                <div class="text-2xl font-bold text-yellow-400" x-text="row.hauls_10plus_count || '0'"></div>
+              <div class="bg-slate-700/30 rounded-lg p-2.5">
+                <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Hauls (10+)</div>
+                <div class="text-xl font-bold text-yellow-400" x-text="row.hauls_10plus_count || '0'"></div>
               </div>
             </div>
 
             <!-- Secondary Metrics -->
-            <div class="flex flex-wrap gap-2 text-xs">
-              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-2.5 py-1">
                 <span class="text-slate-400">Matches:</span>
                 <span class="text-slate-200 font-semibold ml-1" x-text="row.matches_counted || '0'"></span>
               </div>
-              <div class="metric-badge bg-rose-900/20 border border-rose-700/30 rounded-lg px-3 py-1.5">
+              <div class="metric-badge bg-rose-900/20 border border-rose-700/30 rounded-lg px-2.5 py-1">
                 <span class="text-rose-400">Blanks:</span>
                 <span class="text-rose-300 font-semibold ml-1" x-text="row.blanks_le2_count || '0'"></span>
               </div>
-              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-2.5 py-1">
                 <span class="text-slate-400">Blank %:</span>
                 <span class="text-slate-200 font-semibold ml-1" x-text="row.blanks_rate || '0'"></span>
               </div>
-              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-2.5 py-1">
                 <span class="text-slate-400">Volatility:</span>
                 <span class="text-slate-200 font-semibold ml-1" x-text="row.points_sd || '0'"></span>
               </div>
@@ -515,35 +515,35 @@
       <!-- Table Section -->
       <div x-show="viewMode === 'table'" class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden shadow-xl view-transition">
         <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
-          <table class="w-full text-sm sm:text-base border-collapse">
+          <table class="w-full text-sm border-collapse">
             <thead class="bg-gradient-to-r from-slate-800 to-slate-700 border-b-2 border-slate-600">
               <tr>
                 <template x-for="(header, index) in headers" :key="header">
                   <th 
                     @click="toggleSort(header)" 
                     :class="[
-                      'px-3 sm:px-5 py-3 sm:py-4 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
-                      index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[140px] sm:min-w-[180px] border-r border-slate-600' : '',
-                      header === 'team' ? 'min-w-[100px] sm:min-w-[140px]' : '',
-                      header === 'element_type' ? 'min-w-[80px] sm:min-w-[100px]' : '',
-                      header === 'matches_counted' ? 'min-w-[80px] sm:min-w-[100px]' : '',
-                      header === 'points_avg' ? 'min-w-[100px] sm:min-w-[120px] !text-emerald-400' : '',
-                      header === 'consistency_score' ? 'min-w-[100px] sm:min-w-[120px]' : '',
-                      header === 'returns_5plus_count' ? '!text-green-400' : '',
+                      'px-2 sm:px-3 py-2.5 sm:py-3 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
+                      index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[110px] sm:min-w-[140px] border-r border-slate-600' : '',
+                      header === 'team' ? 'min-w-[60px] sm:min-w-[70px]' : '',
+                      header === 'element_type' ? 'min-w-[55px] sm:min-w-[65px]' : '',
+                      header === 'matches_counted' ? 'min-w-[60px]' : '',
+                      header === 'points_avg' ? 'min-w-[70px] !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[75px]' : '',
+                      header === 'returns_5plus_count' ? 'min-w-[65px] !text-green-400' : '',
                       header === 'return_rate_raw' ? '!text-cyan-400' : '',
-                      header === 'return_rate_smooth' ? 'min-w-[90px] sm:min-w-[110px]' : '',
-                      header === 'blanks_le2_count' ? '!text-rose-400' : '',
-                      header === 'blanks_rate' ? '' : '',
-                      header === 'hauls_10plus_count' ? 'min-w-[90px] sm:min-w-[110px]' : '',
-                      header === 'points_sd' ? '' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[70px]' : '',
+                      header === 'blanks_le2_count' ? 'min-w-[65px] !text-rose-400' : '',
+                      header === 'blanks_rate' ? 'min-w-[70px]' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[65px]' : '',
+                      header === 'points_sd' ? 'min-w-[60px]' : '',
                       index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right' : 'text-left',
                       'whitespace-nowrap'
                     ]"
                     :data-header="header"
                   >
-                    <div :class="['flex items-center gap-2', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start']">
-                      <span x-text="getColumnLabel(header)" class="text-xs font-bold tracking-wide uppercase"></span>
-                      <span x-show="currentSortBy === header" class="text-base sm:text-lg" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
+                    <div :class="['flex items-center gap-1.5', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start']">
+                      <span x-text="getColumnLabel(header)" class="text-[10px] sm:text-xs font-bold tracking-wide uppercase"></span>
+                      <span x-show="currentSortBy === header" class="text-sm sm:text-base" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
                     </div>
                   </th>
                 </template>
@@ -554,20 +554,20 @@
                 <tr class="border-b border-slate-700/50 hover:bg-slate-700/40 transition-colors duration-150">
                   <template x-for="(header, index) in headers" :key="header">
                     <td :class="[
-                      'px-3 sm:px-5 py-3 sm:py-4',
-                      index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[140px] sm:min-w-[180px]' : '',
-                      header === 'team' ? 'min-w-[100px] sm:min-w-[140px]' : '',
-                      header === 'element_type' ? 'min-w-[80px] sm:min-w-[100px]' : '',
-                      header === 'matches_counted' ? 'min-w-[80px] sm:min-w-[100px]' : '',
-                      header === 'points_avg' ? 'min-w-[100px] sm:min-w-[120px] font-bold !text-emerald-400' : '',
-                      header === 'consistency_score' ? 'min-w-[100px] sm:min-w-[120px] font-bold' : '',
-                      header === 'returns_5plus_count' ? 'font-semibold !text-green-400' : '',
+                      'px-2 sm:px-3 py-2.5 sm:py-3',
+                      index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[110px] sm:min-w-[140px]' : '',
+                      header === 'team' ? 'min-w-[60px] sm:min-w-[70px]' : '',
+                      header === 'element_type' ? 'min-w-[55px] sm:min-w-[65px]' : '',
+                      header === 'matches_counted' ? 'min-w-[60px]' : '',
+                      header === 'points_avg' ? 'min-w-[70px] font-bold !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[75px] font-bold' : '',
+                      header === 'returns_5plus_count' ? 'min-w-[65px] font-semibold !text-green-400' : '',
                       header === 'return_rate_raw' ? 'font-semibold !text-cyan-400' : '',
-                      header === 'return_rate_smooth' ? 'min-w-[90px] sm:min-w-[110px]' : '',
-                      header === 'blanks_le2_count' ? 'font-semibold !text-rose-400' : '',
-                      header === 'blanks_rate' ? '' : '',
-                      header === 'hauls_10plus_count' ? 'min-w-[90px] sm:min-w-[110px]' : '',
-                      header === 'points_sd' ? '' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[70px]' : '',
+                      header === 'blanks_le2_count' ? 'min-w-[65px] font-semibold !text-rose-400' : '',
+                      header === 'blanks_rate' ? 'min-w-[70px]' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[65px]' : '',
+                      header === 'points_sd' ? 'min-w-[60px]' : '',
                       index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right tabular-nums' : 'text-left',
                       'text-slate-100'
                     ]">
