@@ -13,7 +13,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader']
       }
     ]
   },
@@ -41,7 +41,7 @@ module.exports = {
       directory: path.join(__dirname, 'dist')
     },
     compress: true,
-    port: 8081,
+    port: 8082,
     hot: true,
     open: true
   },
