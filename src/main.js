@@ -12,7 +12,7 @@ import 'tippy.js/dist/tippy.css';
 import './styles.css';
 
 // Import data
-import metricsData from '../metrics_latest.json';
+import metricsData from '../player-metrics.json';
 
 // Import configuration and utilities
 import {
