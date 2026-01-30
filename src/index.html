@@ -515,14 +515,14 @@
       <!-- Table Section -->
       <div x-show="viewMode === 'table'" class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden shadow-xl view-transition">
         <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
-          <table class="w-full text-sm border-collapse">
+          <table class="w-full text-[13px] sm:text-sm border-collapse">
             <thead class="bg-gradient-to-r from-slate-800 to-slate-700 border-b-2 border-slate-600">
               <tr>
                 <template x-for="(header, index) in headers" :key="header">
                   <th 
                     @click="toggleSort(header)" 
                     :class="[
-                      'px-2 sm:px-3 py-2.5 sm:py-3 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
+                      'px-2.5 sm:px-3 py-3 sm:py-3.5 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
                       index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[110px] sm:min-w-[140px] border-r border-slate-600' : '',
                       header === 'team' ? 'min-w-[60px] sm:min-w-[70px]' : '',
                       header === 'element_type' ? 'min-w-[55px] sm:min-w-[65px]' : '',
@@ -542,7 +542,7 @@
                     :data-header="header"
                   >
                     <div :class="['flex items-center gap-1.5', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start']">
-                      <span x-text="getColumnLabel(header)" class="text-[10px] sm:text-xs font-bold tracking-wide uppercase"></span>
+                      <span x-text="getColumnLabel(header)" class="text-[11px] sm:text-xs font-bold tracking-wide uppercase"></span>
                       <span x-show="currentSortBy === header" class="text-sm sm:text-base" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
                     </div>
                   </th>
@@ -551,10 +551,10 @@
             </thead>
             <tbody>
               <template x-for="(row, idx) in data" :key="row.id">
-                <tr class="border-b border-slate-700/50 hover:bg-slate-700/40 transition-colors duration-150">
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-150">
                   <template x-for="(header, index) in headers" :key="header">
                     <td :class="[
-                      'px-2 sm:px-3 py-2.5 sm:py-3',
+                      'px-2.5 sm:px-3 py-3 sm:py-3.5 leading-relaxed',
                       index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[110px] sm:min-w-[140px]' : '',
                       header === 'team' ? 'min-w-[60px] sm:min-w-[70px]' : '',
                       header === 'element_type' ? 'min-w-[55px] sm:min-w-[65px]' : '',
