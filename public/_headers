@@ -1,11 +1,15 @@
-# Sitemap headers
+# =====================================================
+# Sitemap
+# =====================================================
 /sitemap.xml
   Content-Type: application/xml; charset=UTF-8
   X-Content-Type-Options: nosniff
   Cache-Control: public, max-age=3600
 
-# Security headers
+# =====================================================
+# Global security
+# =====================================================
 /*
   X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
