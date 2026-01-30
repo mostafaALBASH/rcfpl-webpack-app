@@ -1,0 +1,27 @@
+{
+  "name": "fpl-return-consistency-webpack",
+  "version": "1.0.0",
+  "description": "FPL Return Consistency - Webpack Alpine.js App",
+  "private": true,
+  "scripts": {
+    "start": "webpack serve --mode development --open",
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development"
+  },
+  "dependencies": {
+    "alpinejs": "^3.13.3",
+    "tippy.js": "^6.3.7",
+    "@popperjs/core": "^2.11.8"
+  },
+  "devDependencies": {
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "html-webpack-plugin": "^5.6.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3"
+  },
+  "keywords": ["fpl", "alpine", "webpack"],
+  "author": "",
+  "license": "ISC"
+}

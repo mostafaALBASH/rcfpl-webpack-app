@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K5G0VTS9E7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-K5G0VTS9E7');
+  </script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Measure how reliably a player returns points - not just their total. Professional FPL analytics based on Return Consistency framework.">
+  <title>Return Consistency (FPL)</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2338bdf8'/><path d='M20 30 L50 15 L80 30 L80 55 L50 70 L20 55 Z' fill='%231e293b' stroke='%2338bdf8' stroke-width='3'/><circle cx='35' cy='38' r='4' fill='%2310b981'/><circle cx='50' cy='32' r='4' fill='%2310b981'/><circle cx='65' cy='38' r='4' fill='%2310b981'/><circle cx='43' cy='48' r='4' fill='%2310b981'/><circle cx='57' cy='48' r='4' fill='%2310b981'/><text x='50' y='88' font-family='Arial,sans-serif' font-size='20' font-weight='bold' fill='%231e293b' text-anchor='middle'>RC</text></svg>">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tippy-box[data-theme~='dark'] {
+      background-color: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #475569;
+      font-size: 13px;
+      line-height: 1.5;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      border-radius: 6px;
+    }
+    
+    /* Custom scrollbar styling */
+    .scrollbar-thin::-webkit-scrollbar {
+      height: 10px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #1e293b;
+      border-radius: 8px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 8px;
+      border: 2px solid #1e293b;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+
+    /* Card view animations */
+    .player-card {
+      animation: fadeInUp 0.3s ease-out;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Metric badge styling */
+    .metric-badge {
+      backdrop-filter: blur(10px);
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Smooth transitions */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Floating Action Button */
+    .fab {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+      animation: fabPulse 2s ease-in-out infinite;
+    }
+    @keyframes fabPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Active Filter Badge Animation */
+    .filter-badge {
+      animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Hide scrollbar on filter panel */
+    .filter-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .filter-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .filter-content::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+
+    /* View transition effects */
+    [x-cloak] { display: none !important; }
+    
+    .view-transition {
+      animation: viewFadeIn 0.3s ease-out;
+    }
+    @keyframes viewFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen">
+  <div x-data="fplViewer()" x-init="init()" class="min-h-screen">
+    
+    <!-- View Change Notification Toast -->
+    <div 
+      x-show="showViewChangeNotification"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 transform translate-y-2"
+      x-transition:enter-end="opacity-100 transform translate-y-0"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100 transform translate-y-0"
+      x-transition:leave-end="opacity-0 transform translate-y-2"
+      class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-2 font-medium text-sm"
+      style="display: none;"
+    >
+      <span x-text="viewChangeMessage"></span>
+    </div>
+    
+    <!-- Header -->
+    <header class="border-b border-slate-700 bg-slate-800/50 backdrop-blur-sm sticky top-0 z-30">
+      <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="w-full sm:w-auto">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent pb-1">
+              Return Consistency (FPL)
+            </h1>
+            <p class="text-slate-400 mt-1 text-xs sm:text-sm">Measure how reliably a player returns points - not just their total.</p>
+          </div>
+          <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+            <div class="text-left sm:text-right text-sm">
+              <div class="text-slate-300 font-semibold"><span x-text="totalPlayers || '0'"></span> Players</div>
+              <div class="text-blue-400 text-xs mt-1">Page <span x-text="currentPage"></span>/<span x-text="totalPages"></span></div>
+            </div>
+            <!-- View Toggle -->
+            <div class="flex items-center gap-1 bg-slate-700/50 rounded-lg p-1">
+              <button 
+                @click="viewMode = 'card'" 
+                :class="viewMode === 'card' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'"
+                class="px-3 py-1.5 rounded-md transition-all duration-200 text-xs font-medium"
+                title="Card View (Mobile Friendly)"
+              >
+                <span class="hidden sm:inline">Cards</span>
+                <span class="sm:hidden">📱</span>
+              </button>
+              <button 
+                @click="viewMode = 'table'" 
+                :class="viewMode === 'table' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'"
+                class="px-3 py-1.5 rounded-md transition-all duration-200 text-xs font-medium"
+                title="Table View (Desktop)"
+              >
+                <span class="hidden sm:inline">Table</span>
+                <span class="sm:hidden">📊</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Active Filters Display (Mobile & Desktop) -->
+      <div x-show="hasActiveFilters()" class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="text-slate-400 text-sm font-medium">Active Filters:</span>
+        
+        <!-- Search Badge -->
+        <template x-if="searchQuery">
+          <button @click="clearSearch()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 border border-blue-500/50 text-blue-300 rounded-lg text-sm font-medium hover:bg-blue-600/30 transition-all">
+            <span>🔍</span>
+            <span x-text="'Search: ' + searchQuery"></span>
+            <span class="text-blue-400">×</span>
+          </button>
+        </template>
+        
+        <!-- Club Badge -->
+        <template x-if="selectedClub">
+          <button @click="clearClub()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/20 border border-emerald-500/50 text-emerald-300 rounded-lg text-sm font-medium hover:bg-emerald-600/30 transition-all">
+            <span>🏟️</span>
+            <span x-text="'Team: ' + selectedClub"></span>
+            <span class="text-emerald-400">×</span>
+          </button>
+        </template>
+        
+        <!-- Position Badge -->
+        <template x-if="selectedPosition">
+          <button @click="clearPosition()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-600/20 border border-purple-500/50 text-purple-300 rounded-lg text-sm font-medium hover:bg-purple-600/30 transition-all">
+            <span>⚽</span>
+            <span x-text="'Position: ' + selectedPosition"></span>
+            <span class="text-purple-400">×</span>
+          </button>
+        </template>
+        
+        <!-- Sort Badge -->
+        <template x-if="currentSortBy !== 'points_avg'">
+          <button @click="resetSort()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 border border-cyan-500/50 text-cyan-300 rounded-lg text-sm font-medium hover:bg-cyan-600/30 transition-all">
+            <span>📊</span>
+            <span x-text="'Sort: ' + getSortLabel(currentSortBy)"></span>
+            <span class="text-cyan-400" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
+          </button>
+        </template>
+        
+        <!-- Clear All -->
+        <button @click="clearAllFilters()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600/20 border border-red-500/50 text-red-300 rounded-lg text-sm font-medium hover:bg-red-600/30 transition-all">
+          <span>Clear All</span>
+        </button>
+      </div>
+      
+      <!-- Controls Section (Desktop Only) -->
+      <div class="hidden lg:block bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 controls-grid">
+
+          <!-- Download Button -->
+          <button @click="download" class="group h-12 sm:h-12 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 sm:px-6 font-semibold text-white transition-all duration-200 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2" title="Download filtered data as CSV">
+            <span class="text-lg">⬇️</span>
+            <span class="text-sm">Export CSV</span>
+          </button>
+
+          <!-- Search Input -->
+          <div class="relative">
+            <input 
+              type="search" 
+              x-model="searchQuery" 
+              @input="debounceSearch" 
+              placeholder="Search player..." 
+              class="w-full h-12 bg-slate-700 border border-slate-600 rounded-lg px-4 pr-10 text-slate-100 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:bg-slate-600 text-sm"
+              title="Search by player name"
+            >
+            <span class="absolute right-3 top-3.5 text-slate-400 text-lg pointer-events-none">🔍</span>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <select 
+            x-model="currentSortBy" 
+            @change="loadData(1)" 
+            class="h-12 bg-slate-700 border border-slate-600 rounded-lg px-3 sm:px-4 text-slate-100 text-sm transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:bg-slate-600 cursor-pointer"
+            title="Sort by metric"
+          >
+            <option value="points_avg">📊 Avg Points</option>
+            <option value="consistency_score">⭐ Consistency Score</option>
+            <option value="return_rate_smooth">✨ Return Rate</option>
+            <option value="returns_5plus_count">🎯 5+ Returns Count</option>
+            <option value="hauls_10plus_count">🚀 Hauls (10+)</option>
+            <option value="blanks_rate">📉 Blank Rate</option>
+            <option value="points_sd">📈 Volatility (SD)</option>
+            <option value="matches_counted">🏃 Matches</option>
+            <option value="web_name">🔤 Player Name</option>
+          </select>
+
+          <!-- Club Filter -->
+          <select 
+            x-model="selectedClub" 
+            @change="filterByClub" 
+            class="h-12 bg-slate-700 border border-slate-600 rounded-lg px-3 sm:px-4 text-slate-100 text-sm transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:bg-slate-600 cursor-pointer"
+            title="Filter by team"
+          >
+            <option value="">🏟️ All Teams</option>
+            <template x-for="club in clubs" :key="club">
+              <option :value="club" x-text="club"></option>
+            </template>
+          </select>
+
+          <!-- Position Filter -->
+          <select 
+            x-model="selectedPosition" 
+            @change="filterByPosition" 
+            class="h-12 bg-slate-700 border border-slate-600 rounded-lg px-3 sm:px-4 text-slate-100 text-sm transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:bg-slate-600 cursor-pointer"
+            title="Filter by position"
+          >
+            <option value="">⚽ All Positions</option>
+            <option value="GKP">🧤 Goalkeeper</option>
+            <option value="DEF">🛡️ Defender</option>
+            <option value="MID">⚡ Midfielder</option>
+            <option value="FWD">🎯 Forward</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Mobile Filter FAB -->
+      <button 
+        @click="openFilterPanel()" 
+        class="lg:hidden fixed bottom-6 right-6 z-40 fab w-14 h-14 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl hover:from-blue-500 hover:to-blue-600 active:scale-95 transition-all duration-200"
+        title="Open Filters & Sort"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        <span x-show="hasActiveFilters()" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs font-bold flex items-center justify-center" x-text="getActiveFilterCount()"></span>
+      </button>
+
+      <!-- Mobile Filter Panel (Bottom Sheet) -->
+      <div x-show="filterPanelOpen" class="lg:hidden fixed inset-0 z-50" style="display: none;">
+        <!-- Overlay -->
+        <div 
+          @click="closeFilterPanel()" 
+          x-show="filterPanelOpen"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="absolute inset-0 bg-black/60 backdrop-blur-sm filter-overlay"
+        ></div>
+        
+        <!-- Filter Panel -->
+        <div 
+          x-show="filterPanelOpen"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="transform translate-y-full"
+          x-transition:enter-end="transform translate-y-0"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="transform translate-y-0"
+          x-transition:leave-end="transform translate-y-full"
+          class="absolute bottom-0 left-0 right-0 bg-gradient-to-br from-slate-800 to-slate-900 rounded-t-3xl shadow-2xl max-h-[85vh] flex flex-col"
+        >
+          <!-- Panel Header -->
+          <div class="flex items-center justify-between p-5 border-b border-slate-700">
+            <div>
+              <h3 class="text-xl font-bold text-slate-100">Filters & Sort</h3>
+              <p class="text-xs text-slate-400 mt-0.5" x-show="hasActiveFilters()" x-text="getActiveFilterCount() + ' active'"></p>
+            </div>
+            <button @click="closeFilterPanel()" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-300 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Panel Content (Scrollable) -->
+          <div class="flex-1 overflow-y-auto filter-content p-5 space-y-5">
+            
+            <!-- Search Section -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2">🔍 Search Player</label>
+              <div class="relative">
+                <input 
+                  type="search" 
+                  x-model="tempSearchQuery" 
+                  placeholder="Type player name..." 
+                  class="w-full h-12 bg-slate-700 border border-slate-600 rounded-lg px-4 pr-10 text-slate-100 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 text-base"
+                >
+                <span class="absolute right-3 top-3.5 text-slate-400 text-lg pointer-events-none">🔍</span>
+              </div>
+            </div>
+
+            <!-- Sort Section -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2">📊 Sort By</label>
+              <select 
+                x-model="tempSortBy" 
+                class="w-full h-12 bg-slate-700 border border-slate-600 rounded-lg px-4 text-slate-100 text-base transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 cursor-pointer"
+              >
+                <option value="points_avg">📊 Avg Points</option>
+                <option value="consistency_score">⭐ Consistency Score</option>
+                <option value="return_rate_smooth">✨ Return Rate</option>
+                <option value="returns_5plus_count">🎯 5+ Returns Count</option>
+                <option value="hauls_10plus_count">🚀 Hauls (10+)</option>
+                <option value="blanks_rate">📉 Blank Rate</option>
+                <option value="points_sd">📈 Volatility (SD)</option>
+                <option value="matches_counted">🏃 Matches</option>
+                <option value="web_name">🔤 Player Name</option>
+              </select>
+              
+              <!-- Sort Order Toggle -->
+              <div class="mt-3 flex items-center gap-2">
+                <button 
+                  @click="tempSortOrder = tempSortOrder === 'desc' ? 'asc' : 'desc'"
+                  class="flex-1 h-11 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium text-sm"
+                  :class="tempSortOrder === 'desc' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span class="text-lg">↓</span>
+                  <span>High to Low</span>
+                </button>
+                <button 
+                  @click="tempSortOrder = tempSortOrder === 'asc' ? 'desc' : 'asc'"
+                  class="flex-1 h-11 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium text-sm"
+                  :class="tempSortOrder === 'asc' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span class="text-lg">↑</span>
+                  <span>Low to High</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Team Filter Section -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2">🏟️ Filter by Team</label>
+              <select 
+                x-model="tempClub" 
+                class="w-full h-12 bg-slate-700 border border-slate-600 rounded-lg px-4 text-slate-100 text-base transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 cursor-pointer"
+              >
+                <option value="">All Teams</option>
+                <template x-for="club in clubs" :key="club">
+                  <option :value="club" x-text="club"></option>
+                </template>
+              </select>
+            </div>
+
+            <!-- Position Filter Section -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2">⚽ Filter by Position</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button 
+                  @click="tempPosition = tempPosition === 'GKP' ? '' : 'GKP'"
+                  class="h-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                  :class="tempPosition === 'GKP' ? 'bg-purple-600 border-purple-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span>🧤</span>
+                  <span>GKP</span>
+                </button>
+                <button 
+                  @click="tempPosition = tempPosition === 'DEF' ? '' : 'DEF'"
+                  class="h-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                  :class="tempPosition === 'DEF' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span>🛡️</span>
+                  <span>DEF</span>
+                </button>
+                <button 
+                  @click="tempPosition = tempPosition === 'MID' ? '' : 'MID'"
+                  class="h-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                  :class="tempPosition === 'MID' ? 'bg-green-600 border-green-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span>⚡</span>
+                  <span>MID</span>
+                </button>
+                <button 
+                  @click="tempPosition = tempPosition === 'FWD' ? '' : 'FWD'"
+                  class="h-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                  :class="tempPosition === 'FWD' ? 'bg-red-600 border-red-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300'"
+                >
+                  <span>🎯</span>
+                  <span>FWD</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Panel Footer (Actions) -->
+          <div class="p-5 border-t border-slate-700 bg-slate-900/50 backdrop-blur-sm space-y-3">
+            <button 
+              @click="applyFilters()" 
+              class="w-full h-12 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-base shadow-lg hover:from-blue-500 hover:to-blue-600 active:scale-98 transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <span>✓</span>
+              <span>Apply Filters</span>
+            </button>
+            <button 
+              @click="clearAllFiltersPanel()" 
+              class="w-full h-11 rounded-lg bg-slate-700 border border-slate-600 text-slate-300 font-medium text-base hover:bg-slate-600 active:scale-98 transition-all duration-200"
+            >
+              Clear All
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Export Button (Mobile) -->
+      <button 
+        @click="download" 
+        class="lg:hidden fixed bottom-6 left-6 z-40 w-12 h-12 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-full flex items-center justify-center text-white text-xl shadow-lg hover:from-emerald-500 hover:to-emerald-600 active:scale-95 transition-all duration-200"
+        title="Export CSV"
+      >
+        <span>⬇️</span>
+      </button>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-blue-500/50 transition-colors duration-200">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Total Players</div>
+          <div class="text-2xl sm:text-3xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
+        </div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-cyan-500/50 transition-colors duration-200">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Per Page</div>
+          <div class="text-2xl sm:text-3xl font-bold text-cyan-400" x-text="pageSize"></div>
+        </div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-emerald-500/50 transition-colors duration-200">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Current Page</div>
+          <div class="text-2xl sm:text-3xl font-bold text-emerald-400" x-text="currentPage"></div>
+        </div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-5 text-center hover:border-indigo-500/50 transition-colors duration-200">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Total Pages</div>
+          <div class="text-2xl sm:text-3xl font-bold text-indigo-400" x-text="totalPages"></div>
+        </div>
+      </div>
+
+      <!-- Card View (Mobile-First) -->
+      <div x-show="viewMode === 'card'" class="space-y-4 mb-8 view-transition">
+        <template x-for="(row, idx) in data" :key="row.id">
+          <div class="player-card bg-gradient-to-br from-slate-800 to-slate-800/90 border border-slate-700 rounded-xl p-5 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10">
+            <!-- Player Header -->
+            <div class="flex items-start justify-between mb-4 pb-4 border-b border-slate-700">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-xl font-bold text-blue-300 mb-1 truncate" x-text="row.web_name"></h3>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300 font-medium" x-text="row.team"></span>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
+                    :class="{
+                      'bg-purple-900/30 text-purple-400': row.element_type === 'GKP',
+                      'bg-blue-900/30 text-blue-400': row.element_type === 'DEF',
+                      'bg-green-900/30 text-green-400': row.element_type === 'MID',
+                      'bg-red-900/30 text-red-400': row.element_type === 'FWD'
+                    }"
+                    x-text="getPositionIcon(row.element_type)"></span>
+                </div>
+              </div>
+              <!-- Main Score -->
+              <div class="text-right ml-3">
+                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Score</div>
+                <div class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent" x-text="formatScore(row.consistency_score, row)"></div>
+              </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <!-- Avg Points -->
+              <div class="bg-slate-700/30 rounded-lg p-3">
+                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Avg Points</div>
+                <div class="text-2xl font-bold text-emerald-400" x-text="row.points_avg || '0'"></div>
+              </div>
+              <!-- Return Rate -->
+              <div class="bg-slate-700/30 rounded-lg p-3">
+                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Return Rate</div>
+                <div class="text-2xl font-bold text-cyan-400" x-text="row.return_rate_smooth || '0'"></div>
+              </div>
+              <!-- 5+ Returns -->
+              <div class="bg-slate-700/30 rounded-lg p-3">
+                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">5+ Returns</div>
+                <div class="text-2xl font-bold text-green-400" x-text="row.returns_5plus_count || '0'"></div>
+              </div>
+              <!-- Hauls -->
+              <div class="bg-slate-700/30 rounded-lg p-3">
+                <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Hauls (10+)</div>
+                <div class="text-2xl font-bold text-yellow-400" x-text="row.hauls_10plus_count || '0'"></div>
+              </div>
+            </div>
+
+            <!-- Secondary Metrics -->
+            <div class="flex flex-wrap gap-2 text-xs">
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+                <span class="text-slate-400">Matches:</span>
+                <span class="text-slate-200 font-semibold ml-1" x-text="row.matches_counted || '0'"></span>
+              </div>
+              <div class="metric-badge bg-rose-900/20 border border-rose-700/30 rounded-lg px-3 py-1.5">
+                <span class="text-rose-400">Blanks:</span>
+                <span class="text-rose-300 font-semibold ml-1" x-text="row.blanks_le2_count || '0'"></span>
+              </div>
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+                <span class="text-slate-400">Blank %:</span>
+                <span class="text-slate-200 font-semibold ml-1" x-text="row.blanks_rate || '0'"></span>
+              </div>
+              <div class="metric-badge bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-1.5">
+                <span class="text-slate-400">Volatility:</span>
+                <span class="text-slate-200 font-semibold ml-1" x-text="row.points_sd || '0'"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Empty State for Cards -->
+        <template x-if="data.length === 0">
+          <div class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl py-16 text-center">
+            <div class="text-slate-400">
+              <div class="text-5xl mb-3">📭</div>
+              <div class="text-xl font-semibold">No players found</div>
+              <div class="text-sm text-slate-500 mt-2">Try adjusting your filters or search terms</div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Table Section -->
+      <div x-show="viewMode === 'table'" class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden shadow-xl view-transition">
+        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
+          <table class="w-full text-sm sm:text-base border-collapse">
+            <thead class="bg-gradient-to-r from-slate-800 to-slate-700 border-b-2 border-slate-600">
+              <tr>
+                <template x-for="(header, index) in headers" :key="header">
+                  <th 
+                    @click="toggleSort(header)" 
+                    :class="[
+                      'px-3 sm:px-5 py-3 sm:py-4 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
+                      index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[140px] sm:min-w-[180px] border-r border-slate-600' : '',
+                      header === 'team' ? 'min-w-[100px] sm:min-w-[140px]' : '',
+                      header === 'element_type' ? 'min-w-[80px] sm:min-w-[100px]' : '',
+                      header === 'matches_counted' ? 'min-w-[80px] sm:min-w-[100px]' : '',
+                      header === 'points_avg' ? 'min-w-[100px] sm:min-w-[120px] !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[100px] sm:min-w-[120px]' : '',
+                      header === 'returns_5plus_count' ? '!text-green-400' : '',
+                      header === 'return_rate_raw' ? '!text-cyan-400' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[90px] sm:min-w-[110px]' : '',
+                      header === 'blanks_le2_count' ? '!text-rose-400' : '',
+                      header === 'blanks_rate' ? '' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[90px] sm:min-w-[110px]' : '',
+                      header === 'points_sd' ? '' : '',
+                      index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right' : 'text-left',
+                      'whitespace-nowrap'
+                    ]"
+                    :data-header="header"
+                  >
+                    <div :class="['flex items-center gap-2', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start']">
+                      <span x-text="getColumnLabel(header)" class="text-xs font-bold tracking-wide uppercase"></span>
+                      <span x-show="currentSortBy === header" class="text-base sm:text-lg" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
+                    </div>
+                  </th>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="(row, idx) in data" :key="row.id">
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/40 transition-colors duration-150">
+                  <template x-for="(header, index) in headers" :key="header">
+                    <td :class="[
+                      'px-3 sm:px-5 py-3 sm:py-4',
+                      index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[140px] sm:min-w-[180px]' : '',
+                      header === 'team' ? 'min-w-[100px] sm:min-w-[140px]' : '',
+                      header === 'element_type' ? 'min-w-[80px] sm:min-w-[100px]' : '',
+                      header === 'matches_counted' ? 'min-w-[80px] sm:min-w-[100px]' : '',
+                      header === 'points_avg' ? 'min-w-[100px] sm:min-w-[120px] font-bold !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[100px] sm:min-w-[120px] font-bold' : '',
+                      header === 'returns_5plus_count' ? 'font-semibold !text-green-400' : '',
+                      header === 'return_rate_raw' ? 'font-semibold !text-cyan-400' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[90px] sm:min-w-[110px]' : '',
+                      header === 'blanks_le2_count' ? 'font-semibold !text-rose-400' : '',
+                      header === 'blanks_rate' ? '' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[90px] sm:min-w-[110px]' : '',
+                      header === 'points_sd' ? '' : '',
+                      index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right tabular-nums' : 'text-left',
+                      'text-slate-100'
+                    ]">
+                      <span x-show="header === 'consistency_score' && isLowSample(row)" x-html="formatValue(header, row[header], row)"></span>
+                      <span x-show="!(header === 'consistency_score' && isLowSample(row))" x-text="row[header] || '-'" :class="index === 0 ? 'font-semibold' : 'font-normal'"></span>
+                    </td>
+                  </template>
+                </tr>
+              </template>
+              <template x-if="data.length === 0">
+                <tr>
+                  <td :colspan="headers.length" class="px-6 py-16 text-center">
+                    <div class="text-slate-400">
+                      <div class="text-5xl mb-3">📭</div>
+                      <div class="text-xl font-semibold">No players found</div>
+                      <div class="text-sm text-slate-500 mt-2">Try adjusting your filters or search terms</div>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+        <button 
+          @click="loadData(currentPage - 1)" 
+          :disabled="currentPage === 1"
+          class="w-full sm:w-auto h-12 px-6 rounded-lg bg-slate-700 text-slate-100 font-semibold transition-all duration-200 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2 touch-manipulation"
+        >
+          <span class="text-lg">←</span>
+          <span>Previous</span>
+        </button>
+        
+        <div class="text-center min-w-max">
+          <div class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span x-text="currentPage"></span>
+          </div>
+          <div class="text-slate-400 text-sm mt-1">of <span x-text="totalPages"></span> pages</div>
+        </div>
+
+        <button 
+          @click="loadData(currentPage + 1)" 
+          :disabled="currentPage === totalPages"
+          class="w-full sm:w-auto h-12 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold transition-all duration-200 hover:from-blue-500 hover:to-blue-600 disabled:from-slate-700 disabled:to-slate-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2 touch-manipulation"
+        >
+          <span>Next</span>
+          <span class="text-lg">→</span>
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-12 text-center px-4">
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-slate-200 mb-3">About Return Consistency</h3>
+          <div class="text-slate-400 text-sm leading-relaxed max-w-4xl mx-auto space-y-3 text-left sm:text-center">
+            <p>
+              <strong>What is Return Consistency?</strong> Return Consistency measures how reliably a player delivers FPL points, not just their ceiling. 
+              A "return" is any match where a player scores <strong>5+ FPL points</strong> (the threshold used by this tool for meaningful fantasy contribution). 
+              A "blank" is <strong>0-2 points</strong> (per Premier League glossary: "blanked" = failed to return more than appearance points). 
+              A "haul" is <strong>10+ points</strong> (double-digit games, useful for upside measurement).
+            </p>
+            <p>
+              <strong>How is the Consistency Score calculated?</strong> The score (0-100) is a percentile-based composite with three weighted components:
+            </p>
+            <ul class="text-left max-w-2xl mx-auto space-y-2 pl-4">
+              <li><strong>55%</strong> - Return Rate: % of appearances with 5+ points, using <em>plus-four smoothing</em> (x+2)/(n+4) to stabilize small-sample estimates (Agresti-Caffo method).</li>
+              <li><strong>25%</strong> - Low Volatility: Inverse of points standard deviation (SD). Lower SD = more predictable scoring week-to-week.</li>
+              <li><strong>20%</strong> - Low Blanks: Inverse of blank rate (0-2 point games). Lower blank rate = more reliable floor.</li>
+            </ul>
+            <p>
+              Players with fewer than 6 appearances are excluded from percentile calculation and assigned a score of 0 (marked "Low sample").
+              All metrics use <strong>appearances only</strong> (matches with minutes &gt; 0), not the full fixture list.
+            </p>
+          </div>
+        </div>
+        <div class="text-slate-500 text-xs">
+          <p>✨ Data based on FPL match performance • Definitions: 5+ returns (tool threshold), blanks ≤2 (Premier League glossary), hauls 10+</p>
+        </div>
+        
+        <!-- Developer Credits -->
+        <div class="mt-8 pt-6 border-t border-slate-700/50">
+          <div class="flex flex-col items-center gap-3 text-slate-400 text-sm">
+            <div class="flex items-center gap-2">
+              <span class="text-slate-500">by</span>
+              <span class="font-semibold text-blue-400">Mostafa Elbesh</span>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
+              <a href="https://github.com/mostafaALBASH" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                </svg>
+                <span>mostafaALBASH</span>
+              </a>
+              <span class="text-slate-600">•</span>
+              <a href="mailto:mosteloy@gmail.com" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>mosteloy@gmail.com</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
