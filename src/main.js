@@ -1,122 +1,191 @@
+/**
+ * FPL Return Consistency - Main Application
+ * Refactored for maintainability and clean code structure
+ */
+
 // Import dependencies
 import Alpine from 'alpinejs';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+
+// Import custom styles
+import './styles.css';
+
+// Import data
 import metricsData from '../metrics_latest.json';
+
+// Import configuration and utilities
+import {
+  APP_CONFIG,
+  COLUMN_LABELS,
+  COLUMN_TOOLTIPS,
+  POSITION_CONFIG,
+  SORT_OPTIONS,
+  MESSAGES,
+  getSortLabelByKey
+} from './config.js';
+
+import {
+  isLowSample,
+  getProcessedData,
+  paginateData,
+  extractClubs,
+  getHeaders,
+  formatConsistencyScore,
+  formatCellValue,
+  getTableColumnClasses,
+  generateCSV,
+  downloadCSV,
+  getInitialViewMode,
+  isMobile,
+  isLargeScreen
+} from './utils.js';
 
 // Make tippy globally available
 window.tippy = tippy;
 
-// Column configuration
-const COLUMN_LABELS = {
-  'web_name': 'Player',
-  'team': 'Team',
-  'element_type': 'Position',
-  'matches_counted': 'Matches',
-  'returns_5plus_count': '✨ 5+ Returns',
-  'return_rate_raw': '✨ Return Rate',
-  'return_rate_smooth': 'Return Rate (Smoothed)',
-  'blanks_le2_count': 'Blanks (≤2)',
-  'blanks_rate': 'Blank Rate',
-  'hauls_10plus_count': 'Hauls (10+)',
-  'points_avg': 'Avg Points',
-  'points_sd': 'Points Volatility',
-  'consistency_score': 'Consistency Score'
-};
-
-const COLUMN_TOOLTIPS = {
-  'web_name': 'Player name',
-  'team': 'Club (abbreviated)',
-  'element_type': 'GKP (Goalkeeper), DEF (Defender), MID (Midfielder), FWD (Forward)',
-  'matches_counted': 'Appearances only (minutes > 0). All metrics calculated from these matches.',
-  'returns_5plus_count': '5+ point returns (threshold used by this tool). Count of matches where player scored 5 or more FPL points.',
-  'return_rate_raw': 'Raw return rate (%) = returns / matches. Unadjusted proportion.',
-  'return_rate_smooth': 'Smoothed return rate (%) using plus-four adjustment (x+2)/(n+4). Stabilizes small-sample estimates. Default display.',
-  'blanks_le2_count': 'Blanks = matches with 0–2 points. Per Premier League glossary: "blanked" means failed to return more than appearance points.',
-  'blanks_rate': 'Blank rate (%) = blanks / matches. Lower = more reliable floor.',
-  'hauls_10plus_count': '10+ point hauls. Double-digit games. Not an official FPL term but useful for upside measurement.',
-  'points_avg': 'Average FPL points per appearance. Descriptive statistic only.',
-  'points_sd': 'Points volatility (population SD). Spread/variability of match-to-match points. Higher = more streaky/unpredictable.',
-  'consistency_score': 'Percentile-based composite (0–100). Weights: 55% return rate + 25% low volatility + 20% low blanks. Higher = more reliable fantasy asset. Players with <6 matches excluded from percentile calculation.'
-};
-
-// Alpine component
+/**
+ * Alpine.js Component - FPL Viewer
+ * Main application component for viewing and filtering FPL data
+ */
 function fplViewer() {
   return {
+    // ========================================================================
+    // DATA STATE
+    // ========================================================================
     allData: metricsData,
     data: [],
+    clubs: [],
+    totalPlayers: 0,
+
+    // ========================================================================
+    // PAGINATION STATE
+    // ========================================================================
     currentPage: 1,
     totalPages: 0,
-    pageSize: 10,
-    clubs: [],
+    pageSize: APP_CONFIG.DEFAULT_PAGE_SIZE,
+
+    // ========================================================================
+    // FILTER STATE
+    // ========================================================================
     selectedClub: '',
     selectedPosition: '',
     searchQuery: '',
-    currentSortBy: 'points_avg',
-    currentSortOrder: 'desc',
     searchTimeout: null,
-    totalPlayers: 0,
-    viewMode: window.innerWidth < 768 ? 'card' : 'table', // Auto-detect on init
-    
-    // Filter Panel State
+
+    // ========================================================================
+    // SORT STATE
+    // ========================================================================
+    currentSortBy: APP_CONFIG.DEFAULT_SORT_BY,
+    currentSortOrder: APP_CONFIG.DEFAULT_SORT_ORDER,
+
+    // ========================================================================
+    // VIEW STATE
+    // ========================================================================
+    viewMode: getInitialViewMode(),
+
+    // ========================================================================
+    // MOBILE FILTER PANEL STATE
+    // ========================================================================
     filterPanelOpen: false,
     tempSearchQuery: '',
     tempClub: '',
     tempPosition: '',
-    tempSortBy: 'points_avg',
-    tempSortOrder: 'desc',
-    
-    // View change notification
+    tempSortBy: APP_CONFIG.DEFAULT_SORT_BY,
+    tempSortOrder: APP_CONFIG.DEFAULT_SORT_ORDER,
+
+    // ========================================================================
+    // NOTIFICATION STATE
+    // ========================================================================
     viewChangeMessage: '',
     showViewChangeNotification: false,
 
+    // ========================================================================
+    // COMPUTED PROPERTIES
+    // ========================================================================
+
+    /**
+     * Get table headers from current data
+     */
     get headers() {
-      return this.data.length > 0 ? Object.keys(this.data[0]).filter(h => h !== 'id') : [];
+      return getHeaders(this.data);
     },
 
+    // ========================================================================
+    // FORMATTING METHODS
+    // ========================================================================
+
+    /**
+     * Get column label
+     */
     getColumnLabel(header) {
       return COLUMN_LABELS[header] || header.charAt(0).toUpperCase() + header.slice(1).replace(/_/g, ' ');
     },
 
+    /**
+     * Get column tooltip
+     */
     getColumnTooltip(header) {
       return COLUMN_TOOLTIPS[header] || '';
     },
 
+    /**
+     * Get position icon and label
+     */
     getPositionIcon(position) {
-      const icons = {
-        'GKP': '🧤 GKP',
-        'DEF': '🛡️ DEF',
-        'MID': '⚡ MID',
-        'FWD': '🎯 FWD'
-      };
-      return icons[position] || position;
+      return POSITION_CONFIG[position]?.display || position;
     },
 
+    /**
+     * Get sort label by key
+     */
     getSortLabel(sortKey) {
-      const labels = {
-        'points_avg': 'Avg Points',
-        'consistency_score': 'Consistency',
-        'return_rate_smooth': 'Return Rate',
-        'returns_5plus_count': '5+ Returns',
-        'hauls_10plus_count': 'Hauls',
-        'blanks_rate': 'Blank Rate',
-        'points_sd': 'Volatility',
-        'matches_counted': 'Matches',
-        'web_name': 'Name'
-      };
-      return labels[sortKey] || sortKey;
+      return getSortLabelByKey(sortKey);
     },
 
+    /**
+     * Format consistency score
+     */
     formatScore(score, row) {
-      if (this.isLowSample(row)) {
-        return '0';
-      }
-      return score || '0';
+      return formatConsistencyScore(score, row);
     },
 
-    // Filter Panel Functions
+    /**
+     * Format cell value with HTML
+     */
+    formatValue(header, value, row) {
+      return formatCellValue(header, value, row);
+    },
+
+    /**
+     * Check if player has low sample
+     */
+    isLowSample(row) {
+      return isLowSample(row);
+    },
+
+    /**
+     * Get CSS classes for table columns
+     */
+    getTableColumnClasses(header, index, isHeaderRow = false) {
+      return getTableColumnClasses(header, index, isHeaderRow);
+    },
+
+    /**
+     * Get CSS classes for table columns
+     */
+    getTableColumnClasses(header, index, isHeaderRow = false) {
+      return getTableColumnClasses(header, index, isHeaderRow);
+    },
+
+    // ========================================================================
+    // FILTER PANEL METHODS
+    // ========================================================================
+
+    /**
+     * Open mobile filter panel
+     */
     openFilterPanel() {
-      // Sync temp values with current filters
       this.tempSearchQuery = this.searchQuery;
       this.tempClub = this.selectedClub;
       this.tempPosition = this.selectedPosition;
@@ -126,13 +195,18 @@ function fplViewer() {
       document.body.style.overflow = 'hidden';
     },
 
+    /**
+     * Close mobile filter panel
+     */
     closeFilterPanel() {
       this.filterPanelOpen = false;
       document.body.style.overflow = '';
     },
 
+    /**
+     * Apply filters from mobile panel
+     */
     applyFilters() {
-      // Apply all temp values to actual filters
       this.searchQuery = this.tempSearchQuery;
       this.selectedClub = this.tempClub;
       this.selectedPosition = this.tempPosition;
@@ -143,103 +217,219 @@ function fplViewer() {
       this.closeFilterPanel();
     },
 
+    /**
+     * Check if any filters are active
+     */
     hasActiveFilters() {
-      return this.searchQuery || this.selectedClub || this.selectedPosition || this.currentSortBy !== 'points_avg';
+      return this.searchQuery || 
+             this.selectedClub || 
+             this.selectedPosition || 
+             this.currentSortBy !== APP_CONFIG.DEFAULT_SORT_BY;
     },
 
+    /**
+     * Get count of active filters
+     */
     getActiveFilterCount() {
       let count = 0;
       if (this.searchQuery) count++;
       if (this.selectedClub) count++;
       if (this.selectedPosition) count++;
-      if (this.currentSortBy !== 'points_avg') count++;
+      if (this.currentSortBy !== APP_CONFIG.DEFAULT_SORT_BY) count++;
       return count;
     },
 
+    /**
+     * Clear search filter
+     */
     clearSearch() {
       this.searchQuery = '';
       this.loadData(1);
     },
 
+    /**
+     * Clear club filter
+     */
     clearClub() {
       this.selectedClub = '';
       this.loadData(1);
     },
 
+    /**
+     * Clear position filter
+     */
     clearPosition() {
       this.selectedPosition = '';
       this.loadData(1);
     },
 
+    /**
+     * Reset sort to default
+     */
     resetSort() {
-      this.currentSortBy = 'points_avg';
-      this.currentSortOrder = 'desc';
+      this.currentSortBy = APP_CONFIG.DEFAULT_SORT_BY;
+      this.currentSortOrder = APP_CONFIG.DEFAULT_SORT_ORDER;
       this.loadData(1);
     },
 
+    /**
+     * Clear all filters and reset to defaults
+     */
     clearAllFilters() {
       this.searchQuery = '';
       this.selectedClub = '';
       this.selectedPosition = '';
-      this.currentSortBy = 'points_avg';
-      this.currentSortOrder = 'desc';
+      this.currentSortBy = APP_CONFIG.DEFAULT_SORT_BY;
+      this.currentSortOrder = APP_CONFIG.DEFAULT_SORT_ORDER;
       this.loadData(1);
     },
 
+    /**
+     * Clear all filters in mobile panel (temp values)
+     */
     clearAllFiltersPanel() {
       this.tempSearchQuery = '';
       this.tempClub = '';
       this.tempPosition = '';
-      this.tempSortBy = 'points_avg';
-      this.tempSortOrder = 'desc';
+      this.tempSortBy = APP_CONFIG.DEFAULT_SORT_BY;
+      this.tempSortOrder = APP_CONFIG.DEFAULT_SORT_ORDER;
     },
 
-    init() {
-      this.loadClubs();
+    // ========================================================================
+    // DATA LOADING & PROCESSING
+    // ========================================================================
+
+    /**
+     * Load clubs list from data
+     */
+    loadClubs() {
+      this.clubs = extractClubs(this.allData);
+    },
+
+    /**
+     * Load and display data with filters and pagination
+     */
+    loadData(page = 1) {
+      try {
+        // Get filtered and sorted data
+        const processedData = getProcessedData(this.allData, {
+          searchQuery: this.searchQuery,
+          selectedClub: this.selectedClub,
+          selectedPosition: this.selectedPosition,
+          sortBy: this.currentSortBy,
+          sortOrder: this.currentSortOrder
+        });
+
+        // Apply pagination
+        const result = paginateData(processedData, page, this.pageSize);
+        
+        this.data = result.data;
+        this.currentPage = result.currentPage;
+        this.totalPages = result.totalPages;
+        this.totalPlayers = result.totalItems;
+
+        // Re-initialize tooltips after data update
+        this.initTooltips();
+      } catch (err) {
+        console.error('Error loading data:', err);
+        this.data = [];
+        this.currentPage = 1;
+        this.totalPages = 1;
+        this.totalPlayers = 0;
+      }
+    },
+
+    /**
+     * Debounced search handler
+     */
+    debounceSearch() {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.loadData(1);
+      }, APP_CONFIG.SEARCH_DEBOUNCE_DELAY);
+    },
+
+    /**
+     * Filter by club
+     */
+    filterByClub() {
       this.loadData(1);
-      this.initTooltips();
-      
-      // Dynamic view mode switching on window resize
-      let resizeTimeout;
-      
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          const currentWidth = window.innerWidth;
-          const isMobile = currentWidth < 768;
-          const isLargeScreen = currentWidth >= 1024;
-          
-          if (isMobile && this.viewMode === 'table') {
-            this.viewMode = 'card';
-            this.showViewNotification('📱 Switched to Card View');
-          } else if (isLargeScreen && this.viewMode === 'card') {
-            this.viewMode = 'table';
-            this.showViewNotification('📊 Switched to Table View');
-          }
-        }, 150); // Debounce resize events
-      });
-
-      // Close filter panel on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && this.filterPanelOpen) {
-          this.closeFilterPanel();
-        }
-      });
     },
 
+    /**
+     * Filter by position
+     */
+    filterByPosition() {
+      this.loadData(1);
+    },
+
+    /**
+     * Toggle sort column and order
+     */
+    toggleSort(column) {
+      if (this.currentSortBy === column) {
+        this.currentSortOrder = this.currentSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.currentSortBy = column;
+        this.currentSortOrder = 'desc';
+      }
+      this.loadData(1);
+    },
+
+    // ========================================================================
+    // VIEW & NOTIFICATION METHODS
+    // ========================================================================
+
+    /**
+     * Show view change notification
+     */
     showViewNotification(message) {
       this.viewChangeMessage = message;
       this.showViewChangeNotification = true;
       setTimeout(() => {
         this.showViewChangeNotification = false;
-      }, 2000);
+      }, APP_CONFIG.NOTIFICATION_DURATION);
     },
 
+    // ========================================================================
+    // EXPORT METHODS
+    // ========================================================================
+
+    /**
+     * Download filtered data as CSV
+     */
+    download() {
+      const processedData = getProcessedData(this.allData, {
+        searchQuery: this.searchQuery,
+        selectedClub: this.selectedClub,
+        selectedPosition: this.selectedPosition,
+        sortBy: this.currentSortBy,
+        sortOrder: this.currentSortOrder
+      });
+
+      if (processedData.length === 0) {
+        console.warn('No data to export');
+        return;
+      }
+
+      const csv = generateCSV(processedData);
+      downloadCSV(csv);
+    },
+
+    // ========================================================================
+    // TOOLTIP INITIALIZATION
+    // ========================================================================
+
+    /**
+     * Initialize Tippy.js tooltips on table headers
+     */
     initTooltips() {
       this.$nextTick(() => {
         document.querySelectorAll('th[data-header]').forEach(th => {
           const header = th.getAttribute('data-header');
           const tooltip = this.getColumnTooltip(header);
+          
+          // Only create tooltip if content exists and tooltip not already initialized
           if (tooltip && !th._tippy) {
             tippy(th, {
               content: tooltip,
@@ -255,135 +445,66 @@ function fplViewer() {
       });
     },
 
-    loadClubs() {
-      const uniqueClubs = [...new Set(this.allData.map(row => row.team))].filter(Boolean).sort();
-      this.clubs = uniqueClubs;
-    },
+    // ========================================================================
+    // INITIALIZATION
+    // ========================================================================
 
-    loadData(page = 1) {
-      try {
-        const filteredData = this.getFilteredData();
-
-        // Calculate pagination
-        this.totalPlayers = filteredData.length;
-        this.totalPages = Math.ceil(filteredData.length / this.pageSize) || 1;
-        
-        // Validate and set page
-        this.currentPage = Math.max(1, Math.min(page, this.totalPages));
-
-        // Paginate data
-        const startIdx = (this.currentPage - 1) * this.pageSize;
-        this.data = filteredData.slice(startIdx, startIdx + this.pageSize);
-
-        this.initTooltips();
-      } catch (err) {
-        console.error('Load error:', err);
-        this.data = [];
-      }
-    },
-
-    getFilteredData() {
-      let filtered = [...this.allData];
-
-      // Apply search filter (overrides club/position)
-      if (this.searchQuery.length >= 1) {
-        const query = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(row => (row.web_name || '').toLowerCase().includes(query));
-      } else {
-        // Apply club filter
-        if (this.selectedClub) {
-          filtered = filtered.filter(row => row.team === this.selectedClub);
-        }
-        // Apply position filter
-        if (this.selectedPosition) {
-          filtered = filtered.filter(row => row.element_type === this.selectedPosition);
-        }
-      }
-
-      // Sort data
-      return filtered.sort((a, b) => {
-        const aVal = a[this.currentSortBy];
-        const bVal = b[this.currentSortBy];
-        const aNum = parseFloat(aVal);
-        const bNum = parseFloat(bVal);
-
-        // Numeric sorting
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-          return this.currentSortOrder === 'desc' ? bNum - aNum : aNum - bNum;
-        }
-
-        // String sorting
-        const aStr = String(aVal || '').toLowerCase();
-        const bStr = String(bVal || '').toLowerCase();
-        return this.currentSortOrder === 'desc' ? bStr.localeCompare(aStr) : aStr.localeCompare(bStr);
-      });
-    },
-
-    debounceSearch() {
-      clearTimeout(this.searchTimeout);
-      this.searchTimeout = setTimeout(() => {
-        this.loadData(1);
-      }, 300);
-    },
-
-    filterByClub() {
+    /**
+     * Initialize application
+     */
+    init() {
+      // Load initial data
+      this.loadClubs();
       this.loadData(1);
-    },
-
-    filterByPosition() {
-      this.loadData(1);
-    },
-
-    toggleSort(column) {
-      if (this.currentSortBy === column) {
-        this.currentSortOrder = this.currentSortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.currentSortBy = column;
-        this.currentSortOrder = 'desc';
-      }
-      this.loadData(1);
-    },
-
-    isLowSample(row) {
-      return (row.matches_counted || 0) < 6;
-    },
-
-    formatValue(header, value, row) {
-      if (header === 'consistency_score' && this.isLowSample(row)) {
-        return value === 0 || value === '0' 
-          ? '<span class="text-slate-500">0 <span class="text-xs bg-yellow-900/30 text-yellow-400 px-2 py-0.5 rounded">Low sample</span></span>' 
-          : value;
-      }
-      return value;
-    },
-
-    download() {
-      const filteredData = this.getFilteredData();
-      if (filteredData.length === 0) return;
-
-      const headers = Object.keys(filteredData[0]);
-      let csv = headers.join(',') + '\r\n';
+      this.initTooltips();
       
-      filteredData.forEach(row => {
-        const values = headers.map(h => {
-          const val = row[h];
-          if (typeof val === 'string' && (val.includes(',') || val.includes('"'))) {
-            return `"${val.replace(/"/g, '""')}"`;
-          }
-          return val;
-        });
-        csv += values.join(',') + '\r\n';
-      });
+      // Setup responsive view mode switching
+      this.setupResponsiveViewMode();
+      
+      // Setup keyboard shortcuts
+      this.setupKeyboardShortcuts();
+    },
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'fpl_return_consistency.csv';
-      link.click();
-      URL.revokeObjectURL(link.href);
+    /**
+     * Setup responsive view mode with debounced resize handler
+     */
+    setupResponsiveViewMode() {
+      let resizeTimeout;
+      
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (isMobile() && this.viewMode === 'table') {
+            this.viewMode = 'card';
+            this.showViewNotification(MESSAGES.viewChange.card);
+          } else if (isLargeScreen() && this.viewMode === 'card') {
+            this.viewMode = 'table';
+            this.showViewNotification(MESSAGES.viewChange.table);
+          }
+        }, APP_CONFIG.RESIZE_DEBOUNCE_DELAY);
+      });
+    },
+
+    /**
+     * Setup keyboard shortcuts
+     */
+    setupKeyboardShortcuts() {
+      document.addEventListener('keydown', (e) => {
+        // Close filter panel on Escape
+        if (e.key === 'Escape' && this.filterPanelOpen) {
+          this.closeFilterPanel();
+        }
+      });
     }
   };
 }
 
+// ============================================================================
+// EXPORT & INITIALIZE
+// ============================================================================
+
+// Make component globally available for Alpine
 window.fplViewer = fplViewer;
+
+// Start Alpine.js
 Alpine.start();
