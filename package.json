@@ -6,7 +6,6 @@
   "scripts": {
     "start": "webpack serve --mode development --open",
     "build": "cross-env NODE_ENV=production webpack --mode production --progress",
-    "build:analyze": "cross-env NODE_ENV=production webpack --mode production --analyze",
     "build:stats": "cross-env NODE_ENV=production webpack --mode production --json > webpack-stats.json",
     "dev": "webpack serve --mode development",
     "clean": "rimraf dist .webpack_cache"
