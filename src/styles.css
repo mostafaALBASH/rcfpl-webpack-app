@@ -5,6 +5,11 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  
+  /* Font loading optimization - use system fonts with swap fallback */
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
 }
 
 /**
@@ -62,6 +67,46 @@
 .filter-content::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 3px;
+}
+
+/* ========================================================================
+   CLS FIX: RESERVED SPACE FOR DYNAMIC CONTENT
+   ======================================================================== */
+
+/* Alpine.js cloaking - hide uninitialized elements */
+[x-cloak] {
+  display: none !important;
+}
+
+/* Ensure stat cards grid maintains height before Alpine renders */
+.grid.grid-cols-2.lg\:grid-cols-4 {
+  min-height: 120px;
+}
+
+/* Reserve space for desktop controls to prevent CLS */
+.hidden.lg\:block.bg-gradient-to-br {
+  min-height: 100px;
+}
+
+/* Header flex container - prevent shift when numbers load */
+.flex.items-center.gap-4.w-full.sm\:w-auto {
+  min-height: 48px;
+}
+
+/* Footer minimum height */
+.mt-12.text-center {
+  min-height: 200px;
+}
+
+/* Pagination controls minimum height */
+.mt-8.flex.flex-col.sm\:flex-row {
+  min-height: 60px;
+}
+
+/* Content-visibility optimization for off-screen cards */
+.player-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
 }
 
 /* ========================================================================
