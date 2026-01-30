@@ -508,3 +508,6 @@ window.fplViewer = fplViewer;
 
 // Start Alpine.js
 Alpine.start();
+
+// Show body with smooth fade-in (prevents FOUC while providing instant feel)
+document.body.classList.add('ready');
