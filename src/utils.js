@@ -132,14 +132,38 @@ export function extractClubs(data) {
 }
 
 /**
- * Get headers from data object (excluding id)
+ * Get headers from data object (excluding id) in custom display order
  * @param {Array} data - Dataset
- * @returns {Array} Header names
+ * @returns {Array} Header names in desired order
  */
 export function getHeaders(data) {
-  return data.length > 0 
-    ? Object.keys(data[0]).filter(h => h !== 'id') 
-    : [];
+  if (data.length === 0) return [];
+  
+  // Define the desired column order based on UX requirements
+  const desiredOrder = [
+    'web_name',           // Player
+    'team',               // Team
+    'element_type',       // Position
+    'matches_counted',    // Matches
+    'points_avg',         // Avg Points (moved after Matches)
+    'returns_5plus_count', // 5+ Returns
+    'return_rate_raw',    // Return Rate
+    'return_rate_smooth', // Return Rate (Smoothed)
+    'blanks_le2_count',   // Blanks (≤2)
+    'blanks_rate',        // Blank Rate
+    'hauls_10plus_count', // Hauls (10+)
+    'points_sd',          // Points Volatility
+    'consistency_score'   // Consistency Score (remains at end)
+  ];
+  
+  // Get all available keys from data (excluding 'id')
+  const availableKeys = Object.keys(data[0]).filter(h => h !== 'id');
+  
+  // Return keys in desired order, followed by any additional keys not in the order
+  const orderedKeys = desiredOrder.filter(key => availableKeys.includes(key));
+  const remainingKeys = availableKeys.filter(key => !desiredOrder.includes(key));
+  
+  return [...orderedKeys, ...remainingKeys];
 }
 
 // ============================================================================

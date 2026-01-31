@@ -162,7 +162,25 @@ module.exports = (env, argv) => {
       ],
       splitChunks: {
         chunks: 'all',
+        maxInitialRequests: 25,
+        maxAsyncRequests: 25,
+        minSize: 10000,
         cacheGroups: {
+          // Alpine.js in separate chunk
+          alpine: {
+            test: /[\\/]node_modules[\\/]alpinejs[\\/]/,
+            name: 'alpine',
+            priority: 20,
+            reuseExistingChunk: true
+          },
+          // Tippy.js + Popper (lazy-loaded)
+          tooltips: {
+            test: /[\\/]node_modules[\\/](tippy\.js|@popperjs)[\\/]/,
+            name: 'tooltips',
+            priority: 15,
+            reuseExistingChunk: true
+          },
+          // Other vendors
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',

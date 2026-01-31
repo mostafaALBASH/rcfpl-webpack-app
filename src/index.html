@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Preconnect to external domains for faster loading -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K5G0VTS9E7"></script>
   <script>
@@ -133,16 +137,14 @@
           </button>
         </template>
         
-        <!-- Sort Badge -->
-        <template x-if="currentSortBy !== 'points_avg'">
-          <button @click="resetSort()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 border border-cyan-500/50 text-cyan-300 rounded-lg text-sm font-medium hover:bg-cyan-600/30 transition-all">
-            <span>📊</span>
-            <span x-text="'Sort: ' + getSortLabel(currentSortBy)"></span>
-            <span class="text-cyan-400" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
-          </button>
-        </template>
+        <!-- Sort Badge - Always visible to show current sorting state -->
+        <button @click="resetSort()" class="filter-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 border border-cyan-500/50 text-cyan-300 rounded-lg text-sm font-medium hover:bg-cyan-600/30 transition-all">
+          <span>📊</span>
+          <span x-text="'Sort: ' + getSortLabel(currentSortBy)"></span>
+          <span class="text-cyan-400" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
+        </button>
         
-        <!-- Clear All -->
+        <!-- Clear All Filters -->
         <button @click="clearAllFilters()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600/20 border border-red-500/50 text-red-300 rounded-lg text-sm font-medium hover:bg-red-600/30 transition-all">
           <span>Clear All</span>
         </button>
@@ -411,20 +413,20 @@
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-blue-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Total Players</div>
-          <div class="text-xl sm:text-2xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
+          <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Total Players</div>
+          <div class="text-2xl sm:text-3xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
         </div>
         <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-cyan-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Per Page</div>
-          <div class="text-xl sm:text-2xl font-bold text-cyan-400" x-text="pageSize"></div>
+          <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Per Page</div>
+          <div class="text-2xl sm:text-3xl font-bold text-cyan-400" x-text="pageSize"></div>
         </div>
         <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-emerald-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Current Page</div>
-          <div class="text-xl sm:text-2xl font-bold text-emerald-400" x-text="currentPage"></div>
+          <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Current Page</div>
+          <div class="text-2xl sm:text-3xl font-bold text-emerald-400" x-text="currentPage"></div>
         </div>
         <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-indigo-500/50 transition-colors duration-200" x-cloak>
-          <div class="text-slate-400 text-[10px] sm:text-xs font-semibold uppercase tracking-wide mb-1">Total Pages</div>
-          <div class="text-xl sm:text-2xl font-bold text-indigo-400" x-text="totalPages"></div>
+          <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Total Pages</div>
+          <div class="text-2xl sm:text-3xl font-bold text-indigo-400" x-text="totalPages"></div>
         </div>
       </div>
 
@@ -522,28 +524,28 @@
                   <th 
                     @click="toggleSort(header)" 
                     :class="[
-                      'px-2 sm:px-2.5 py-3 sm:py-3.5 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
-                      index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[85px] sm:min-w-[105px] border-r border-slate-600' : '',
-                      header === 'team' ? 'min-w-[48px] sm:min-w-[52px]' : '',
-                      header === 'element_type' ? 'min-w-[42px] sm:min-w-[48px]' : '',
-                      header === 'matches_counted' ? 'min-w-[48px]' : '',
-                      header === 'points_avg' ? 'min-w-[58px] !text-emerald-400' : '',
-                      header === 'consistency_score' ? 'min-w-[120px]' : '',
-                      header === 'returns_5plus_count' ? 'min-w-[58px] !text-green-400' : '',
-                      header === 'return_rate_raw' ? '!text-cyan-400' : '',
-                      header === 'return_rate_smooth' ? 'min-w-[62px]' : '',
-                      header === 'blanks_le2_count' ? 'min-w-[58px] !text-rose-400' : '',
-                      header === 'blanks_rate' ? 'min-w-[62px]' : '',
-                      header === 'hauls_10plus_count' ? 'min-w-[58px]' : '',
-                      header === 'points_sd' ? 'min-w-[52px]' : '',
+                      'px-3 py-3 sm:py-3.5 font-semibold text-slate-200 cursor-pointer hover:bg-slate-700 transition-all duration-200',
+                      index === 0 ? 'sticky left-0 z-20 bg-gradient-to-r from-slate-800 to-slate-700 text-left min-w-[130px] border-r border-slate-600' : '',
+                      header === 'team' ? 'min-w-[56px]' : '',
+                      header === 'element_type' ? 'min-w-[68px]' : '',
+                      header === 'matches_counted' ? 'min-w-[70px]' : '',
+                      header === 'points_avg' ? 'min-w-[85px] !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[100px]' : '',
+                      header === 'returns_5plus_count' ? 'min-w-[104px] !text-green-400' : '',
+                      header === 'return_rate_raw' ? 'min-w-[109px] !text-cyan-400' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[80px]' : '',
+                      header === 'blanks_le2_count' ? 'min-w-[75px] !text-rose-400' : '',
+                      header === 'blanks_rate' ? 'min-w-[85px]' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[80px]' : '',
+                      header === 'points_sd' ? 'min-w-[80px]' : '',
                       index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right' : 'text-left',
-                      'whitespace-nowrap'
+                      ['return_rate_smooth', 'consistency_score', 'points_sd'].includes(header) ? 'whitespace-normal' : 'whitespace-nowrap'
                     ]"
                     :data-header="header"
                   >
-                    <div :class="['flex items-center gap-1.5', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start']">
-                      <span x-text="getColumnLabel(header)" class="text-[11px] sm:text-xs font-bold tracking-wide uppercase"></span>
-                      <span x-show="currentSortBy === header" class="text-sm sm:text-base" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
+                    <div :class="['flex items-center', index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'justify-end' : 'justify-start', ['return_rate_smooth', 'consistency_score', 'points_sd'].includes(header) ? 'leading-tight' : '']">
+                      <span x-text="getColumnLabel(header)" :class="['font-bold tracking-wide', ['return_rate_smooth', 'consistency_score', 'points_sd'].includes(header) ? 'text-[10px] sm:text-xs leading-tight' : 'text-xs sm:text-sm']"></span>
+                      <span x-show="currentSortBy === header" class="text-base sm:text-lg flex-shrink-0 ml-1" x-text="currentSortOrder === 'asc' ? '↑' : '↓'"></span>
                     </div>
                   </th>
                 </template>
@@ -554,20 +556,20 @@
                 <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-150">
                   <template x-for="(header, index) in headers" :key="header">
                     <td :class="[
-                      'px-2 sm:px-2.5 py-3 sm:py-3.5 leading-relaxed',
-                      index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[85px] sm:min-w-[105px]' : '',
-                      header === 'team' ? 'min-w-[48px] sm:min-w-[52px]' : '',
-                      header === 'element_type' ? 'min-w-[42px] sm:min-w-[48px]' : '',
-                      header === 'matches_counted' ? 'min-w-[48px]' : '',
-                      header === 'points_avg' ? 'min-w-[58px] font-bold !text-emerald-400' : '',
-                      header === 'consistency_score' ? 'min-w-[120px] font-bold' : '',
-                      header === 'returns_5plus_count' ? 'min-w-[58px] font-semibold !text-green-400' : '',
-                      header === 'return_rate_raw' ? 'font-semibold !text-cyan-400' : '',
-                      header === 'return_rate_smooth' ? 'min-w-[62px]' : '',
-                      header === 'blanks_le2_count' ? 'min-w-[58px] font-semibold !text-rose-400' : '',
-                      header === 'blanks_rate' ? 'min-w-[62px]' : '',
-                      header === 'hauls_10plus_count' ? 'min-w-[60px]' : '',
-                      header === 'points_sd' ? 'min-w-[52px]' : '',
+                      'px-3 py-3 sm:py-3.5 leading-relaxed',
+                      index === 0 ? 'sticky left-0 z-10 bg-slate-800 border-r border-slate-700/50 font-semibold text-blue-300 min-w-[130px]' : '',
+                      header === 'team' ? 'min-w-[56px]' : '',
+                      header === 'element_type' ? 'min-w-[68px]' : '',
+                      header === 'matches_counted' ? 'min-w-[70px]' : '',
+                      header === 'points_avg' ? 'min-w-[85px] font-bold !text-emerald-400' : '',
+                      header === 'consistency_score' ? 'min-w-[100px] font-bold' : '',
+                      header === 'returns_5plus_count' ? 'min-w-[104px] font-semibold !text-green-400' : '',
+                      header === 'return_rate_raw' ? 'min-w-[109px] font-semibold !text-cyan-400' : '',
+                      header === 'return_rate_smooth' ? 'min-w-[80px]' : '',
+                      header === 'blanks_le2_count' ? 'min-w-[75px] font-semibold !text-rose-400' : '',
+                      header === 'blanks_rate' ? 'min-w-[85px]' : '',
+                      header === 'hauls_10plus_count' ? 'min-w-[80px]' : '',
+                      header === 'points_sd' ? 'min-w-[80px]' : '',
                       index > 0 && ['matches_counted', 'returns_5plus_count', 'return_rate_raw', 'return_rate_smooth', 'blanks_le2_count', 'blanks_rate', 'hauls_10plus_count', 'points_avg', 'points_sd', 'consistency_score'].includes(header) ? 'text-right tabular-nums' : 'text-left',
                       'text-slate-100'
                     ]">

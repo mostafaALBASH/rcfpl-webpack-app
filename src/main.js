@@ -5,8 +5,6 @@
 
 // Import dependencies
 import Alpine from 'alpinejs';
-import tippy from 'tippy.js';
-import 'tippy.js/dist/tippy.css';
 
 // Import custom styles
 import './styles.css';
@@ -40,9 +38,6 @@ import {
   isMobile,
   isLargeScreen
 } from './utils.js';
-
-// Make tippy globally available
-window.tippy = tippy;
 
 /**
  * Alpine.js Component - FPL Viewer
@@ -219,16 +214,15 @@ function fplViewer() {
 
     /**
      * Check if any filters are active
+     * Always returns true to keep Active Filters section visible,
+     * showing the current sort state for transparency and UX clarity
      */
     hasActiveFilters() {
-      return this.searchQuery || 
-             this.selectedClub || 
-             this.selectedPosition || 
-             this.currentSortBy !== APP_CONFIG.DEFAULT_SORT_BY;
+      return true;
     },
 
     /**
-     * Get count of active filters
+     * Get count of active filters (excludes default sort for accurate count)
      */
     getActiveFilterCount() {
       let count = 0;
@@ -421,9 +415,23 @@ function fplViewer() {
     // ========================================================================
 
     /**
-     * Initialize Tippy.js tooltips on table headers
+     * Initialize Tippy.js tooltips on table headers (lazy-loaded)
      */
-    initTooltips() {
+    async initTooltips() {
+      // Only load Tippy.js when actually needed (table view on large screens)
+      if (!window.tippy) {
+        try {
+          const [{ default: tippy }, tippyStyles] = await Promise.all([
+            import(/* webpackChunkName: "tippy" */ 'tippy.js'),
+            import(/* webpackChunkName: "tippy-css" */ 'tippy.js/dist/tippy.css')
+          ]);
+          window.tippy = tippy;
+        } catch (error) {
+          console.warn('Failed to load Tippy.js:', error);
+          return;
+        }
+      }
+
       this.$nextTick(() => {
         document.querySelectorAll('th[data-header]').forEach(th => {
           const header = th.getAttribute('data-header');
@@ -431,7 +439,7 @@ function fplViewer() {
           
           // Only create tooltip if content exists and tooltip not already initialized
           if (tooltip && !th._tippy) {
-            tippy(th, {
+            window.tippy(th, {
               content: tooltip,
               theme: 'dark',
               placement: 'top',

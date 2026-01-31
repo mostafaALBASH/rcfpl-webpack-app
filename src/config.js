@@ -32,19 +32,19 @@ export const APP_CONFIG = {
 // ============================================================================
 
 export const COLUMN_LABELS = {
-  'web_name': 'Player',
-  'team': 'Team',
-  'element_type': 'Position',
-  'matches_counted': 'Matches',
-  'returns_5plus_count': '✨ 5+ Returns',
-  'return_rate_raw': '✨ Return Rate',
-  'return_rate_smooth': 'Return Rate (Smoothed)',
-  'blanks_le2_count': 'Blanks (≤2)',
-  'blanks_rate': 'Blank Rate',
-  'hauls_10plus_count': 'Hauls (10+)',
-  'points_avg': 'Avg Points',
-  'points_sd': 'Points Volatility',
-  'consistency_score': 'Consistency Score'
+  'web_name': 'PLAYER',
+  'team': 'TEAM',
+  'element_type': 'POSITION',
+  'matches_counted': 'MATCHES',
+  'returns_5plus_count': '✨ 5+ RETURNS',
+  'return_rate_raw': '✨ RETURN RATE',
+  'return_rate_smooth': 'RETURN RATE (SMOOTHED)',
+  'blanks_le2_count': 'BLANKS (≤2)',
+  'blanks_rate': 'BLANK RATE',
+  'hauls_10plus_count': 'HAULS (10+)',
+  'points_avg': 'AVG POINTS',
+  'points_sd': 'POINTS VOLATILITY',
+  'consistency_score': 'CONSISTENCY SCORE'
 };
 
 export const COLUMN_TOOLTIPS = {
