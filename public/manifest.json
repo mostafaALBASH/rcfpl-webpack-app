@@ -1,0 +1,32 @@
+{
+  "name": "RCFPL - Return Consistency for Fantasy Premier League",
+  "short_name": "RCFPL",
+  "description": "Explore Return Consistency in Fantasy Premier League (FPL). Identify reliable players based on 5+ point returns.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#38bdf8",
+  "orientation": "any",
+  "scope": "/",
+  "dir": "ltr",
+  "lang": "en-US",
+  "categories": ["sports", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='102' fill='%2338bdf8'/><path d='M102 154 L256 77 L410 154 L410 282 L256 359 L102 282 Z' fill='%231e293b' stroke='%2338bdf8' stroke-width='15'/><circle cx='179' cy='195' r='20' fill='%2310b981'/><circle cx='256' cy='164' r='20' fill='%2310b981'/><circle cx='333' cy='195' r='20' fill='%2310b981'/><circle cx='220' cy='246' r='20' fill='%2310b981'/><circle cx='292' cy='246' r='20' fill='%2310b981'/><text x='256' y='451' font-family='Arial,sans-serif' font-size='102' font-weight='bold' fill='%231e293b' text-anchor='middle'>RC</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect width='1280' height='720' fill='%230f172a'/><text x='640' y='360' font-family='Arial,sans-serif' font-size='48' font-weight='bold' fill='%2338bdf8' text-anchor='middle'>RCFPL Screenshot</text></svg>",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns# schema: https://schema.org/" vocab="https://schema.org/">
 <head>
   <!-- Preconnect to external domains for faster loading -->
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
@@ -17,11 +17,252 @@
   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RCFPL helps you measure player return consistency and make smarter Fantasy Premier League decisions.">
-  <title>RCFPL — Return Consistency for Fantasy Premier League (FPL)</title>
+  <meta name="description" content="Explore Return Consistency in Fantasy Premier League (FPL). Identify reliable players based on 5+ point returns, not just explosive hauls.">
+  <title>Return Consistency in FPL – Reliable Fantasy Premier League Players | RCFPL</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="keywords" content="FPL, Fantasy Premier League, Return Consistency, FPL players, FPL statistics, FPL analysis, consistent FPL players, FPL points, FPL returns, Fantasy Football, Premier League fantasy">
+  <meta name="author" content="Mostafa Elbesh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://rcfpl.netlify.app/">
+  <meta name="theme-color" content="#38bdf8">
+  <meta name="date" content="2025-08-01" scheme="YYYY-MM-DD">
+  <meta name="last-modified" content="2026-01-31">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rcfpl.netlify.app/">
+  <meta property="og:title" content="Return Consistency in FPL – Reliable Fantasy Premier League Players">
+  <meta property="og:description" content="Explore Return Consistency in Fantasy Premier League (FPL). Identify reliable players based on 5+ point returns, not just explosive hauls. Free FPL analysis tool.">
+  <meta property="og:image" content="https://rcfpl.netlify.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="RCFPL">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://rcfpl.netlify.app/">
+  <meta name="twitter:title" content="Return Consistency in FPL – Reliable Fantasy Premier League Players">
+  <meta name="twitter:description" content="Explore Return Consistency in Fantasy Premier League (FPL). Identify reliable players based on 5+ point returns, not just explosive hauls.">
+  <meta name="twitter:image" content="https://rcfpl.netlify.app/og-image.png">
+  <meta name="twitter:creator" content="@mostafaALBASH">
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2338bdf8'/><path d='M20 30 L50 15 L80 30 L80 55 L50 70 L20 55 Z' fill='%231e293b' stroke='%2338bdf8' stroke-width='3'/><circle cx='35' cy='38' r='4' fill='%2310b981'/><circle cx='50' cy='32' r='4' fill='%2310b981'/><circle cx='65' cy='38' r='4' fill='%2310b981'/><circle cx='43' cy='48' r='4' fill='%2310b981'/><circle cx='57' cy='48' r='4' fill='%2310b981'/><text x='50' y='88' font-family='Arial,sans-serif' font-size='20' font-weight='bold' fill='%231e293b' text-anchor='middle'>RC</text></svg>">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Apple Touch Icon & PWA Meta Tags -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='36' fill='%2338bdf8'/><path d='M36 54 L90 27 L144 54 L144 99 L90 126 L36 99 Z' fill='%231e293b' stroke='%2338bdf8' stroke-width='5'/><circle cx='63' cy='68' r='7' fill='%2310b981'/><circle cx='90' cy='58' r='7' fill='%2310b981'/><circle cx='117' cy='68' r='7' fill='%2310b981'/><circle cx='77' cy='86' r='7' fill='%2310b981'/><circle cx='103' cy='86' r='7' fill='%2310b981'/><text x='90' y='155' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%231e293b' text-anchor='middle'>RC</text></svg>">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RCFPL">
+  
+  <!-- Microsoft Tiles -->
+  <meta name="msapplication-TileColor" content="#38bdf8">
+  <meta name="msapplication-config" content="none">
+  
+  <!-- Structured Data (JSON-LD) for AI & Search Engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://rcfpl.netlify.app/#webapp",
+        "url": "https://rcfpl.netlify.app/",
+        "name": "RCFPL - Return Consistency for Fantasy Premier League",
+        "alternateName": "Return Consistency FPL",
+        "description": "Explore Return Consistency in Fantasy Premier League (FPL). Identify reliable players based on 5+ point returns, not just explosive hauls. Free FPL analysis tool with player statistics, consistency scores, and filtering options.",
+        "applicationCategory": "SportsApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "FPL Player Return Consistency Analysis",
+          "5+ Point Return Tracking",
+          "Consistency Score Calculation",
+          "Player Filtering by Team and Position",
+          "Return Rate Statistics",
+          "Blank Rate Analysis",
+          "Haul Tracking (10+ points)",
+          "CSV Export Functionality",
+          "Mobile-Friendly Interface"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "Mostafa Elbesh",
+          "email": "mosteloy@gmail.com",
+          "url": "https://github.com/mostafaALBASH"
+        },
+        "creator": {
+          "@type": "Person",
+          "name": "Mostafa Elbesh"
+        },
+        "inLanguage": "en-US",
+        "isAccessibleForFree": true,
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "datePublished": "2025-08-01",
+        "dateModified": "2026-01-31",
+        "softwareVersion": "1.0.0",
+        "releaseNotes": "Production release with FPL return consistency analysis",
+        "screenshot": "https://rcfpl.netlify.app/og-image.png",
+        "permissions": "No special permissions required",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5",
+          "ratingCount": "1",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "softwareHelp": {
+          "@type": "CreativeWork",
+          "url": "https://rcfpl.netlify.app/#definition"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://rcfpl.netlify.app/#organization",
+        "name": "RCFPL",
+        "url": "https://rcfpl.netlify.app/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rcfpl.netlify.app/logo.png",
+          "width": 180,
+          "height": 180
+        },
+        "sameAs": [
+          "https://github.com/mostafaALBASH"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "mosteloy@gmail.com",
+          "contactType": "Developer",
+          "availableLanguage": "English"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://rcfpl.netlify.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Return Consistency in FPL?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Return Consistency in Fantasy Premier League (FPL) measures how reliably a player delivers FPL points across matches. A return is defined as any gameweek where a player scores 5+ FPL points. This metric focuses on frequency of returns, not just total points or rare explosive hauls."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is the Consistency Score calculated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Consistency Score (0-100) is a percentile-based composite with three weighted components: 55% Return Rate (percentage of appearances with 5+ points using plus-four smoothing), 25% Low Volatility (inverse of points standard deviation for predictable scoring), and 20% Low Blanks (inverse of blank rate for reliable floor). Players with fewer than 6 appearances are excluded and assigned a score of 0."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is considered a return in FPL?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In RCFPL, a return is defined as any match where a player scores 5+ FPL points, representing a meaningful fantasy contribution beyond just appearance points."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a blank in FPL?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A blank is a match where a player scores 0-2 points, meaning they failed to return more than appearance points. This follows the Premier League glossary definition of 'blanked'."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a haul in FPL?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A haul is a match where a player scores 10+ points, representing double-digit games useful for measuring upside potential."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can RCFPL predict future FPL player performance?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. RCFPL analyzes past performance only and does not predict future returns. It uses official FPL match history data to help identify historically consistent players."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is RCFPL free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, RCFPL is completely free to use. It provides FPL return consistency analysis, player filtering, and CSV export at no cost."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which FPL players are most consistent?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The most consistent FPL players are those with high Consistency Scores on RCFPL, indicating they frequently score 5+ points per match with low volatility and low blank rates. Use the sorting and filtering features to identify the most reliable players by position or team."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://rcfpl.netlify.app/#website",
+        "url": "https://rcfpl.netlify.app/",
+        "name": "RCFPL - Return Consistency FPL",
+        "description": "Fantasy Premier League Return Consistency Analysis Tool",
+        "publisher": {
+          "@id": "https://rcfpl.netlify.app/#organization"
+        },
+        "inLanguage": "en-US",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://rcfpl.netlify.app/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://rcfpl.netlify.app/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://rcfpl.netlify.app/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Return Consistency Analysis",
+            "item": "https://rcfpl.netlify.app/#definition"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Methodology",
+            "item": "https://rcfpl.netlify.app/#methodology"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   
   <!-- Critical CSS: Prevents FOUC by setting base styles immediately -->
   <style>
@@ -63,14 +304,14 @@
     </div>
     
     <!-- Header -->
-    <header class="border-b border-slate-700 bg-slate-800/50 backdrop-blur-sm sticky top-0 z-30">
+    <header class="border-b border-slate-700 bg-slate-800/50 backdrop-blur-sm sticky top-0 z-30" role="banner" itemscope itemtype="https://schema.org/WPHeader">
       <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div class="w-full sm:w-auto">
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent pb-1">
+          <div class="w-full sm:w-auto" itemscope itemtype="https://schema.org/WebApplication">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent pb-1" itemprop="name">
               Return Consistency (FPL)
             </h1>
-            <p class="text-slate-400 mt-1 text-xs sm:text-sm">Measure how reliably a player returns points - not just their total.</p>
+            <p class="text-slate-400 mt-1 text-xs sm:text-sm" itemprop="description">Measure how reliably a player returns points - not just their total.</p>
           </div>
           <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <div class="text-left sm:text-right text-sm" x-cloak>
@@ -78,12 +319,14 @@
               <div class="text-blue-400 text-xs mt-1">Page <span x-text="currentPage"></span>/<span x-text="totalPages"></span></div>
             </div>
             <!-- View Toggle -->
-            <div class="flex items-center gap-1 bg-slate-700/50 rounded-lg p-1">
+            <nav aria-label="View mode selection" class="flex items-center gap-1 bg-slate-700/50 rounded-lg p-1" role="navigation">
               <button 
                 @click="viewMode = 'card'" 
                 :class="viewMode === 'card' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'"
                 class="px-3 py-1.5 rounded-md transition-all duration-200 text-xs font-medium"
                 title="Card View (Mobile Friendly)"
+                aria-label="Switch to card view"
+                :aria-pressed="viewMode === 'card'"
               >
                 <span class="hidden sm:inline">Cards</span>
                 <span class="sm:hidden">📱</span>
@@ -93,21 +336,23 @@
                 :class="viewMode === 'table' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'"
                 class="px-3 py-1.5 rounded-md transition-all duration-200 text-xs font-medium"
                 title="Table View (Desktop)"
+                aria-label="Switch to table view"
+                :aria-pressed="viewMode === 'table'"
               >
                 <span class="hidden sm:inline">Table</span>
                 <span class="sm:hidden">📊</span>
               </button>
-            </div>
+            </nav>
           </div>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main" itemscope itemtype="https://schema.org/DataCatalog">
       
       <!-- Active Filters Display (Mobile & Desktop) -->
-      <div x-show="hasActiveFilters()" class="mb-4 flex flex-wrap items-center gap-2">
+      <aside x-show="hasActiveFilters()" class="mb-4 flex flex-wrap items-center gap-2" role="complementary" aria-label="Active filters">
         <span class="text-slate-400 text-sm font-medium">Active Filters:</span>
         
         <!-- Search Badge -->
@@ -148,10 +393,10 @@
         <button @click="clearAllFilters()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600/20 border border-red-500/50 text-red-300 rounded-lg text-sm font-medium hover:bg-red-600/30 transition-all">
           <span>Clear All</span>
         </button>
-      </div>
+      </aside>
       
       <!-- Controls Section (Desktop Only) -->
-      <div class="hidden lg:block bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
+      <section class="hidden lg:block bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg" aria-label="Data controls and filters" role="search">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 controls-grid">
 
           <!-- Download Button -->
@@ -218,15 +463,16 @@
             <option value="FWD">🎯 Forward</option>
           </select>
         </div>
-      </div>
+      </section>
 
       <!-- Mobile Filter FAB -->
       <button 
         @click="openFilterPanel()" 
         class="lg:hidden fixed bottom-6 right-6 z-40 fab w-14 h-14 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl hover:from-blue-500 hover:to-blue-600 active:scale-95 transition-all duration-200"
         title="Open Filters & Sort"
+        aria-label="Open filters and sort panel"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
         </svg>
         <span x-show="hasActiveFilters()" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs font-bold flex items-center justify-center" x-text="getActiveFilterCount()"></span>
@@ -406,12 +652,86 @@
         @click="download" 
         class="lg:hidden fixed bottom-6 left-6 z-40 w-12 h-12 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-full flex items-center justify-center text-white text-xl shadow-lg hover:from-emerald-500 hover:to-emerald-600 active:scale-95 transition-all duration-200"
         title="Export CSV"
+        aria-label="Export data as CSV file"
       >
         <span>⬇️</span>
       </button>
 
+      <!-- Definition Section (Collapsible) -->
+      <article id="definition" class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl mb-4 shadow-lg overflow-hidden" itemscope itemtype="https://schema.org/Article" x-data="{ expanded: false }">
+        <button 
+          @click="expanded = !expanded" 
+          class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-700/30 transition-colors duration-200 text-left group"
+          :aria-expanded="expanded"
+          aria-controls="definition-content"
+        >
+          <h2 class="text-xl sm:text-2xl font-bold text-blue-300 group-hover:text-blue-200 transition-colors" itemprop="headline">
+            What is Return Consistency in FPL?
+          </h2>
+          <svg 
+            class="w-6 h-6 text-blue-400 transform transition-transform duration-200 flex-shrink-0 ml-3" 
+            :class="{ 'rotate-180': expanded }"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="expanded"
+          x-collapse
+          id="definition-content"
+          class="px-6 pb-4"
+          itemprop="articleBody"
+        >
+          <p class="text-slate-300 leading-relaxed">
+            Return Consistency in <strong>Fantasy Premier League (FPL)</strong> measures how reliably a player delivers FPL points across matches.
+            A "return" is defined here as any gameweek where a player scores <strong>5+ FPL points</strong>.
+            This metric focuses on <strong>frequency of returns</strong>, not just total points or rare explosive hauls.
+          </p>
+        </div>
+      </article>
+
+      <!-- Methodology Section (Collapsible) -->
+      <article id="methodology" class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl mb-6 shadow-lg overflow-hidden" itemscope itemtype="https://schema.org/Article" x-data="{ expanded: false }">
+        <button 
+          @click="expanded = !expanded" 
+          class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-700/30 transition-colors duration-200 text-left group"
+          :aria-expanded="expanded"
+          aria-controls="methodology-content"
+        >
+          <h3 class="text-lg sm:text-xl font-bold text-cyan-300 group-hover:text-cyan-200 transition-colors" itemprop="headline">
+            Methodology
+          </h3>
+          <svg 
+            class="w-6 h-6 text-cyan-400 transform transition-transform duration-200 flex-shrink-0 ml-3" 
+            :class="{ 'rotate-180': expanded }"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="expanded"
+          x-collapse
+          id="methodology-content"
+          class="px-6 pb-4"
+          itemprop="articleBody"
+        >
+          <p class="text-slate-300 leading-relaxed">
+            Return Consistency is calculated using official <strong>FPL match history data</strong>.
+            A return is counted when a player scores <strong>5+ points</strong> in a gameweek.
+            <strong>Consistency Score</strong> summarizes return frequency and points volatility.
+            This tool analyzes past performance only and <strong>does not predict future returns</strong>.
+          </p>
+        </div>
+      </article>
+
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-5 sm:mb-6">
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-5 sm:mb-6" aria-label="Statistics summary" itemscope itemtype="https://schema.org/StatisticalPopulation">
         <div class="bg-gradient-to-br from-slate-800 to-slate-800/80 border border-slate-700 rounded-xl p-3 sm:p-4 text-center hover:border-blue-500/50 transition-colors duration-200" x-cloak>
           <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Total Players</div>
           <div class="text-2xl sm:text-3xl font-bold text-blue-400" x-text="totalPlayers || '0'"></div>
@@ -428,18 +748,18 @@
           <div class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wide mb-1.5">Total Pages</div>
           <div class="text-2xl sm:text-3xl font-bold text-indigo-400" x-text="totalPages"></div>
         </div>
-      </div>
+      </section>
 
       <!-- Card View (Mobile-First) -->
-      <div x-show="viewMode === 'card'" class="space-y-3 mb-8 view-transition">
+      <section x-show="viewMode === 'card'" class="space-y-3 mb-8 view-transition" aria-label="Player cards" role="list" itemscope itemtype="https://schema.org/ItemList">
         <template x-for="(row, idx) in data" :key="row.id">
-          <div class="player-card bg-gradient-to-br from-slate-800 to-slate-800/90 border border-slate-700 rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10">
+          <article class="player-card bg-gradient-to-br from-slate-800 to-slate-800/90 border border-slate-700 rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10" role="listitem" itemscope itemtype="https://schema.org/Person">
             <!-- Player Header -->
             <div class="flex items-start justify-between mb-3 pb-3 border-b border-slate-700">
               <div class="flex-1 min-w-0">
-                <h3 class="text-lg font-bold text-blue-300 mb-1 truncate" x-text="row.web_name"></h3>
+                <h3 class="text-lg font-bold text-blue-300 mb-1 truncate" x-text="row.web_name" itemprop="name"></h3>
                 <div class="flex items-center gap-2 text-sm">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-medium text-xs" x-text="row.team"></span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-medium text-xs" x-text="row.team" itemprop="affiliation"></span>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full font-medium text-xs"
                     :class="{
                       'bg-purple-900/30 text-purple-400': row.element_type === 'GKP',
@@ -500,7 +820,7 @@
                 <span class="text-slate-200 font-semibold ml-1" x-text="row.points_sd || '0'"></span>
               </div>
             </div>
-          </div>
+          </article>
         </template>
         <!-- Empty State for Cards -->
         <template x-if="data.length === 0">
@@ -512,12 +832,12 @@
             </div>
           </div>
         </template>
-      </div>
+      </section>
 
       <!-- Table Section -->
-      <div x-show="viewMode === 'table'" class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden shadow-xl view-transition">
+      <section x-show="viewMode === 'table'" class="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden shadow-xl view-transition" aria-label="Player data table" role="region" itemscope itemtype="https://schema.org/Table">
         <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
-          <table class="w-full text-[13px] sm:text-sm border-collapse">
+          <table class="w-full text-[13px] sm:text-sm border-collapse" role="table" aria-label="FPL player consistency data">
             <thead class="bg-gradient-to-r from-slate-800 to-slate-700 border-b-2 border-slate-600">
               <tr>
                 <template x-for="(header, index) in headers" :key="header">
@@ -593,14 +913,15 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
       <!-- Pagination -->
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+      <nav class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6" aria-label="Pagination navigation" role="navigation">
         <button 
           @click="loadData(currentPage - 1)" 
           :disabled="currentPage === 1"
           class="w-full sm:w-auto h-12 px-6 rounded-lg bg-slate-700 text-slate-100 font-semibold transition-all duration-200 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2 touch-manipulation"
+          aria-label="Go to previous page"
         >
           <span class="text-lg">←</span>
           <span>Previous</span>
@@ -617,14 +938,15 @@
           @click="loadData(currentPage + 1)" 
           :disabled="currentPage === totalPages"
           class="w-full sm:w-auto h-12 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold transition-all duration-200 hover:from-blue-500 hover:to-blue-600 disabled:from-slate-700 disabled:to-slate-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2 touch-manipulation"
+          aria-label="Go to next page"
         >
           <span>Next</span>
           <span class="text-lg">→</span>
         </button>
-      </div>
+      </nav>
 
       <!-- Footer -->
-      <div class="mt-12 text-center px-4">
+      <footer class="mt-12 text-center px-4" role="contentinfo" itemscope itemtype="https://schema.org/WPFooter">
         <div class="mb-6">
           <h3 class="text-lg font-bold text-slate-200 mb-3">About Return Consistency</h3>
           <div class="text-slate-400 text-sm leading-relaxed max-w-4xl mx-auto space-y-3 text-left sm:text-center">
@@ -660,14 +982,14 @@
               <span class="font-semibold text-blue-400">Mostafa Elbesh</span>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
-              <a href="https://github.com/mostafaALBASH" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation">
+              <a href="https://github.com/mostafaALBASH" target="_blank" rel="noopener noreferrer author" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation" itemprop="url">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
                 </svg>
                 <span>mostafaALBASH</span>
               </a>
               <span class="text-slate-600">•</span>
-              <a href="mailto:mosteloy@gmail.com" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation">
+              <a href="mailto:mosteloy@gmail.com" class="flex items-center gap-1.5 hover:text-blue-400 transition-colors duration-200 touch-manipulation" itemprop="email">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
@@ -676,7 +998,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </footer>
     </main>
   </div>
 </body>
