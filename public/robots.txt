@@ -1,4 +1,41 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /*.json$
 
+# AI Crawlers - Allow all
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# Crawl-delay for general bots
+Crawl-delay: 1
+
+# Sitemap
 Sitemap: https://rcfpl.netlify.app/sitemap.xml
